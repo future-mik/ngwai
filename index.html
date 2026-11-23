@@ -1,0 +1,622 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080d17">
+<title>NGWAI — Orders. Delivery. Trust.</title>
+<style>
+:root{--bg:#080d17;--panel:#121d2e;--line:#2a3a52;--text:#edf3fb;--muted:#a9b8ca;--accent:#f4b942;--green:#36c995;--red:#ff7777}
+*{box-sizing:border-box;text-shadow:0 0 5px rgba(220,235,255,.18)}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,sans-serif;position:relative}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;background-image:linear-gradient(rgba(8,13,23,.91),rgba(8,13,23,.96)),url('ngwai-logo.jpg');background-repeat:no-repeat;background-position:center;background-size:min(72vw,650px)}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;border:0;border-radius:12px;padding:11px 15px;font-weight:700;background:var(--accent);color:#172033}
+button.secondary{background:#263750;color:white;border:1px solid var(--line)}
+button.ghost{background:transparent;color:white;border:1px solid var(--line)}
+button:disabled{opacity:.45;cursor:not-allowed}
+.wrap{max-width:1180px;margin:auto;padding:18px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 0 20px}
+.brand{font-size:28px;font-weight:950;letter-spacing:3px}
+.brand small{display:block;font-size:10px;letter-spacing:2px;color:var(--muted)}
+.brand-wrap{display:flex;align-items:center;gap:11px}
+.brandmark{width:48px;height:48px;object-fit:contain;border-radius:12px;background:white;padding:3px;border:1px solid var(--line);box-shadow:0 0 12px rgba(244,185,66,.16)}
+.nav{display:flex;gap:8px;flex-wrap:wrap}
+.nav button{background:transparent;color:var(--muted);border:1px solid var(--line)}
+.nav button.active{background:var(--accent);color:#172033}
+.hero{background:linear-gradient(130deg,#1b2d46,#172236 60%,#3b3020);border:1px solid var(--line);border-radius:22px;padding:28px;margin-bottom:18px}
+.hero h1{font-size:clamp(30px,6vw,54px);line-height:1.05}
+.hero p{max-width:650px;color:#d2deed}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:14px}
+.card{background:rgba(18,29,46,.94);border:1px solid var(--line);border-radius:17px;padding:17px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.muted{color:var(--muted)}
+.small{font-size:12px}
+.pill{display:inline-block;padding:4px 9px;border-radius:99px;background:#25364d;color:#cbd8e8;font-size:11px}
+.stars{color:var(--accent);letter-spacing:2px}
+.avatar{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;background:#263a56;font-size:24px}
+.seller-head{display:flex;gap:12px;align-items:center}
+.seller-card h3{margin:0}
+.seller-card p{margin:10px 0}
+.seller-card .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}
+.seller-card button{flex:1}
+.section{display:none}
+.section.active{display:block}
+.field{display:grid;gap:6px;margin:10px 0}
+.field input,.field select,.field textarea{width:100%;background:#0d1727;border:1px solid var(--line);border-radius:10px;padding:12px;color:white}
+.modal{position:fixed;inset:0;background:#000a;display:none;align-items:center;justify-content:center;padding:16px;z-index:10}
+.modal.show{display:flex}
+.modalbox{width:min(520px,100%);max-height:90vh;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px}
+.stars-input button{background:transparent;color:#63748b;font-size:28px;padding:3px}
+.stars-input button.chosen{color:var(--accent)}
+.notice{padding:12px;border-radius:12px;background:#24364c;color:#dce7f5;margin:12px 0}
+.good{color:var(--green)}
+.bad{color:var(--red)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:15px 0}
+.stat{background:#101a2a;padding:13px;border-radius:13px}
+.stat strong{display:block;font-size:24px}
+.list{display:grid;gap:10px}
+.order{border:1px solid var(--line);border-radius:13px;padding:13px;background:#101a2a}
+.meme{font-size:45px;text-align:center;padding:15px}
+.progress{height:10px;background:#25344a;border-radius:20px;overflow:hidden}
+.progress span{display:block;height:100%;background:var(--green)}
+.footer{text-align:center;color:var(--muted);font-size:12px;padding:30px 0}
+.hide{display:none!important}
+.age-gate{position:fixed;inset:0;background:rgba(2,5,10,.97);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px}
+.age-card{width:min(440px,100%);background:#111c2c;border:1px solid #45536a;border-radius:20px;padding:27px;text-align:center;box-shadow:0 0 24px rgba(180,205,255,.12)}
+.age-logo{width:76px;height:76px;object-fit:contain;border-radius:16px}
+.age-actions{display:flex;gap:12px;margin-top:22px}
+.age-actions button{flex:1;padding:14px}
+.age-no{background:#28364a!important;color:white!important;border:1px solid #64748b!important}
+@media(max-width:600px){.wrap{padding:13px}.hero{padding:20px}.nav{width:100%}.nav button{flex:1;padding:9px 6px;font-size:12px}.stats{grid-template-columns:1fr 1fr 1fr}.brand{font-size:24px}}
+</style>
+</head>
+<body>
+
+<div class="age-gate" id="ageGate" role="dialog" aria-modal="true">
+ <div class="age-card" id="ageCard">
+  <img src="ngwai-logo.jpg" alt="NGWAI logo" class="age-logo" onerror="this.style.display='none'">
+  <h1>Before you enter NGWAI</h1>
+  <p>This website is intended for adults aged 18 years and above. Are you 18 or older?</p>
+  <div class="age-actions">
+   <button class="age-no" onclick="denyAge()">NO</button>
+   <button onclick="acceptAge()">YES, ENTER</button>
+  </div>
+  <p class="small muted">Please answer honestly to continue.</p>
+ </div>
+</div>
+
+<div class="wrap">
+<header class="top">
+ <div class="brand-wrap">
+  <img class="brandmark" src="ngwai-logo.jpg" alt="NGWAI logo">
+  <div class="brand">NGWAI<small>ORDERS · DELIVERY · TRUST</small></div>
+ </div>
+ <div class="row">
+  <span id="userLabel" class="muted small">Not signed in</span>
+  <button id="logoutBtn" class="secondary hide" onclick="logout()">Sign out</button>
+ </div>
+</header>
+
+<nav class="nav">
+ <button class="active" data-tab="home">Home</button>
+ <button data-tab="sellers">Sellers</button>
+ <button data-tab="orders">Orders</button>
+ <button data-tab="memes">Memes</button>
+ <button data-tab="streak">90-day streak</button>
+ <button data-tab="account">Sign in</button>
+</nav>
+
+<section id="home" class="section active">
+ <div class="hero">
+  <span class="pill">NGWAI TEST ENVIRONMENT</span>
+  <h1>Order with confidence.<br>Track every delivery.</h1>
+  <p>Discover sellers, place an order, follow delivery progress and tell us how the experience went.</p>
+  <div class="row" style="justify-content:flex-start;flex-wrap:wrap">
+   <button onclick="showTab('sellers')">Explore sellers</button>
+   <button class="secondary" onclick="showTab('account')">Test sign-in</button>
+  </div>
+ </div>
+ <div class="stats">
+  <div class="stat"><strong>27</strong><span class="muted small">Sample sellers</span></div>
+  <div class="stat"><strong>200</strong><span class="muted small">Anonymous sample clients</span></div>
+  <div class="stat"><strong>90</strong><span class="muted small">Days of progress</span></div>
+ </div>
+ <div class="grid">
+  <div class="card"><h3>How ordering works</h3><p class="muted">Choose a seller, press Order, and NGWAI records the order time. When the seller completes delivery, press Make Delivery. The customer can then rate the experience.</p></div>
+  <div class="card"><h3>Delivery transparency</h3><p class="muted">Each test order records order time, delivery time, elapsed duration and customer feedback.</p></div>
+ </div>
+ <div class="notice"><b>Prototype notice:</b> Seller profiles, ratings, comments and delivery actions are sample data. No real purchase, payment or courier dispatch occurs.</div>
+</section>
+
+<section id="sellers" class="section">
+ <div class="row">
+  <div><h2>Discover sellers</h2><p class="muted">27 independent sample profiles · mixed feedback</p></div>
+  <input id="sellerSearch" placeholder="Search sellers..." style="max-width:210px;background:#0d1727;border:1px solid var(--line);padding:10px;border-radius:10px;color:white">
+ </div>
+ <div id="sellerGrid" class="grid"></div>
+</section>
+
+<section id="orders" class="section">
+ <h2>Your orders</h2>
+ <p class="muted">Orders created in this browser.</p>
+ <div id="orderList" class="list"><div class="card muted">No orders yet. Visit Sellers and place a test order.</div></div>
+</section>
+
+<section id="memes" class="section">
+ <h2>NGWAI Meme Corner</h2>
+ <p class="muted">A little humour while your order is on its way.</p>
+ <div class="grid" id="memeGrid"></div>
+</section>
+
+<section id="streak" class="section">
+ <div class="card">
+  <div class="row"><div><h2>90-day builder streak</h2><p class="muted">One honest progress check-in per day.</p></div><span class="pill">DAY BY DAY</span></div>
+  <div class="stats">
+   <div class="stat"><strong id="streakCount">0</strong><span class="muted small">Current streak</span></div>
+   <div class="stat"><strong id="daysDone">0</strong><span class="muted small">Days completed</span></div>
+   <div class="stat"><strong id="daysLeft">90</strong><span class="muted small">Days remaining</span></div>
+  </div>
+  <div class="progress"><span id="streakBar" style="width:0%"></span></div>
+  <p id="streakMessage" class="muted">Start with your first website progress check-in.</p>
+  <div class="field"><label>What did you work on today?</label><textarea id="streakNote" rows="3" placeholder="Example: Created NGWAI repository and tested email sign-in..."></textarea></div>
+  <button id="checkinBtn" onclick="checkIn()">Mark today's progress</button>
+  <div id="streakHistory" class="list" style="margin-top:15px"></div>
+  <p class="small muted">The tracker saves check-ins in this browser. Report your progress in our conversations so we can keep the challenge going.</p>
+ </div>
+</section>
+
+<section id="account" class="section">
+ <h2>NGWAI account access</h2>
+ <p class="muted">Test email, phone and Google authentication independently.</p>
+ <div class="grid">
+  <div class="card">
+   <h3>Email and password</h3>
+   <div class="field"><label>Email</label><input id="email" type="email" placeholder="you@example.com" autocomplete="email"></div>
+   <div class="field"><label>Password</label><input id="password" type="password" placeholder="At least 6 characters" autocomplete="current-password"></div>
+   <div class="row"><button onclick="emailAuth('signup')">Create account</button><button class="secondary" onclick="emailAuth('login')">Sign in</button></div>
+   <button class="ghost" style="margin-top:10px;width:100%" onclick="resetPassword()">Reset password</button>
+  </div>
+  <div class="card">
+   <h3>Phone number</h3>
+   <p class="small muted">Use international format, for example +2547XXXXXXXX.</p>
+   <div class="field"><label>Phone number</label><input id="phone" type="tel" placeholder="+2547XXXXXXXX" autocomplete="tel"></div>
+   <button onclick="sendCode()">Send verification code</button>
+   <div class="field"><label>SMS verification code</label><input id="otp" inputmode="numeric" placeholder="Enter SMS code"></div>
+   <button class="secondary" onclick="verifyCode()">Verify and sign in</button>
+   <div id="recaptcha-container"></div>
+  </div>
+  <div class="card">
+   <h3>Google</h3>
+   <p class="muted">Continue using your Google account.</p>
+   <button onclick="googleAuth()">Continue with Google</button>
+   <div class="notice small">Google sign-in requires the correct OAuth client, authorized domain and Firebase provider settings.</div>
+  </div>
+ </div>
+ <div id="authStatus" class="notice">Authentication status: waiting for configuration.</div>
+ <div class="notice small"><b>Setup required:</b> Insert your Firebase configuration below. Enable Email/Password, Phone and Google providers in Firebase Authentication. Add your deployed domain to Authorized domains.</div>
+</section>
+
+<div class="footer">NGWAI · Orders. Delivery. Trust.</div>
+</div>
+
+<div class="modal" id="modal">
+ <div class="modalbox">
+  <div class="row"><h2 id="modalTitle">Details</h2><button class="ghost" onclick="closeModal()">✕</button></div>
+  <div id="modalBody"></div>
+ </div>
+</div>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import {
+getAuth,setPersistence,browserLocalPersistence,
+createUserWithEmailAndPassword,signInWithEmailAndPassword,
+sendPasswordResetEmail,GoogleAuthProvider,signInWithPopup,
+signInWithRedirect,getRedirectResult,RecaptchaVerifier,
+signInWithPhoneNumber,signOut,onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import {getFirestore,doc,setDoc,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+/* REPLACE THESE PLACEHOLDERS WITH YOUR NGWAI FIREBASE WEB CONFIG */
+const CONFIG={
+ apiKey:"PASTE_NGWAI_FIREBASE_API_KEY",
+ authDomain:"PASTE_NGWAI_PROJECT_ID.firebaseapp.com",
+ projectId:"PASTE_NGWAI_PROJECT_ID",
+ storageBucket:"PASTE_NGWAI_PROJECT_ID.appspot.com",
+ messagingSenderId:"PASTE_MESSAGING_SENDER_ID",
+ appId:"PASTE_NGWAI_APP_ID"
+};
+
+const configured=Object.values(CONFIG).every(v=>v&&!v.includes("PASTE_"));
+let auth,db,confirmation,recaptcha;
+
+const status=(msg,bad=false)=>{
+ const el=document.getElementById("authStatus");
+ if(el){el.textContent=msg;el.className="notice "+(bad?"bad":"good");}
+};
+
+if(configured){
+ try{
+  const app=initializeApp(CONFIG);
+  auth=getAuth(app);
+  db=getFirestore(app);
+  await setPersistence(auth,browserLocalPersistence);
+
+  onAuthStateChanged(auth,async user=>{
+   document.getElementById("userLabel").textContent=user?(user.displayName||user.email||user.phoneNumber||"Signed in"):"Not signed in";
+   document.getElementById("logoutBtn").classList.toggle("hide",!user);
+   if(user){
+    try{
+     await setDoc(doc(db,"users",user.uid),{
+      uid:user.uid,
+      email:user.email||null,
+      phoneNumber:user.phoneNumber||null,
+      displayName:user.displayName||null,
+      lastSignIn:serverTimestamp()
+     },{merge:true});
+    }catch(e){console.warn("Profile write:",e.message);}
+   }
+  });
+
+  try{await getRedirectResult(auth);}catch(e){status(friendly(e),true);}
+  status("Firebase initialized. Choose an authentication method to test.");
+ }catch(e){status("Firebase setup error: "+friendly(e),true);}
+}else{
+ status("Firebase is not configured yet. Paste your NGWAI Firebase web config into CONFIG.",true);
+}
+
+function friendly(e){
+ const map={
+ "auth/operation-not-allowed":"This sign-in provider is not enabled in Firebase Authentication.",
+ "auth/unauthorized-domain":"This website domain is not authorized in Firebase Authentication settings.",
+ "auth/invalid-api-key":"The Firebase API key is invalid. Check the web app config.",
+ "auth/invalid-phone-number":"Enter a valid international phone number.",
+ "auth/captcha-check-failed":"reCAPTCHA verification failed. Check authorized domains.",
+ "auth/too-many-requests":"Too many attempts. Wait before trying again.",
+ "auth/popup-blocked":"Google sign-in popup was blocked.",
+ "auth/network-request-failed":"Network request failed. Check your connection."
+ };
+ return (map[e.code]||e.message||"Unknown error")+" ["+(e.code||"no error code")+"]";
+}
+
+window.emailAuth=async mode=>{
+ if(!auth)return status("Firebase is not configured.",true);
+ const email=document.getElementById("email").value.trim();
+ const password=document.getElementById("password").value;
+ if(!email||!password)return status("Enter both email and password.",true);
+ try{
+  const cred=mode==="signup"
+   ?await createUserWithEmailAndPassword(auth,email,password)
+   :await signInWithEmailAndPassword(auth,email,password);
+  status((mode==="signup"?"Account created":"Signed in")+" successfully: "+cred.user.email);
+ }catch(e){status(friendly(e),true);}
+};
+
+window.resetPassword=async()=>{
+ if(!auth)return status("Firebase is not configured.",true);
+ const email=document.getElementById("email").value.trim();
+ if(!email)return status("Enter your email address first.",true);
+ try{
+  await sendPasswordResetEmail(auth,email);
+  status("Password reset email sent. Check your inbox.");
+ }catch(e){status(friendly(e),true);}
+};
+
+window.googleAuth=async()=>{
+ if(!auth)return status("Firebase is not configured.",true);
+ try{
+  const provider=new GoogleAuthProvider();
+  provider.setCustomParameters({prompt:"select_account"});
+  await signInWithPopup(auth,provider);
+  status("Google sign-in successful.");
+ }catch(e){
+  if(e.code==="auth/popup-blocked"||e.code==="auth/popup-closed-by-user"){
+   try{await signInWithRedirect(auth,new GoogleAuthProvider());}
+   catch(x){status(friendly(x),true);}
+  }else status(friendly(e),true);
+ }
+};
+
+window.sendCode=async()=>{
+ if(!auth)return status("Firebase is not configured.",true);
+ const phone=document.getElementById("phone").value.trim();
+ if(!/^\+[1-9]\d{7,14}$/.test(phone))
+  return status("Use international phone format, e.g. +2547XXXXXXXX.",true);
+ try{
+  if(!recaptcha)recaptcha=new RecaptchaVerifier(auth,"recaptcha-container",{size:"normal"});
+  confirmation=await signInWithPhoneNumber(auth,phone,recaptcha);
+  status("SMS sent. Enter the verification code.");
+ }catch(e){
+  status(friendly(e),true);
+  try{recaptcha?.clear();recaptcha=null;}catch(_){}
+ }
+};
+
+window.verifyCode=async()=>{
+ if(!confirmation)return status("Request an SMS code first.",true);
+ const code=document.getElementById("otp").value.trim();
+ try{
+  const result=await confirmation.confirm(code);
+  status("Phone verified and signed in: "+result.user.phoneNumber);
+ }catch(e){status(friendly(e),true);}
+};
+
+window.logout=async()=>{
+ if(auth)try{await signOut(auth);status("Signed out.");}
+ catch(e){status(friendly(e),true);}
+};
+</script>
+
+<script>
+function acceptAge(){
+ sessionStorage.setItem("ngwaiAgeConfirmed","yes");
+ document.getElementById("ageGate").style.display="none";
+}
+function denyAge(){
+ document.getElementById("ageCard").innerHTML=
+ '<h1>Access unavailable</h1><p>NGWAI is intended for visitors aged 18 and above. You cannot enter this website.</p><button class="age-no" onclick="window.location.href=\'about:blank\'">EXIT</button>';
+}
+if(sessionStorage.getItem("ngwaiAgeConfirmed")==="yes"){
+ document.getElementById("ageGate").style.display="none";
+}
+
+const sellerNames=[
+"Amani Fresh Mart","Kiboko Electronics","Maua Fashion House",
+"Jirani Grocers","Poa Phone Hub","Urban Sole","Tamu Treats",
+"Kijiji Homeware","Nia Beauty Store","Mtaa Books","Swift Gadgets",
+"Zuri Collections","Mama Njeri Foods","Pixel Point","Baraka Boutique",
+"Green Basket","Kicks Avenue","Soko Select","Mwangaza Decor",
+"Daily Needs Kenya","The Craft Corner","Nova Accessories",
+"Pishi Kitchen","Eastline Outfitters","Smart Choice Supplies",
+"Milele Gifts","Cornerstone Traders"
+];
+
+const categories=[
+"Groceries","Electronics","Fashion","Food & drinks","Phones",
+"Shoes","Home & living","Beauty","Books","Accessories"
+];
+
+const comments=[
+["Arrived earlier than expected. Seller communicated well.","Packaging was okay, but delivery took longer than promised.","Good product. I would order again."],
+["Seller was polite, but the item did not match the photo.","Fast delivery. No complaints this time.","I had to follow up twice before anyone responded."],
+["Affordable and exactly what I needed.","The delivery person was helpful; seller could improve updates.","Not a great experience. The order arrived late."]
+];
+
+const people=[
+"Anonymous client","Customer 014","Guest buyer","Anonymous shopper",
+"Customer 082","Guest 119","Private customer","Customer 031"
+];
+
+const sampleRatings=[
+2.4,4.2,3.1,4.8,2.9,3.7,4.5,1.9,4.0,
+3.3,4.7,2.6,3.9,4.4,2.2,3.5,4.9,3.0,
+4.1,2.8,3.8,4.6,2.5,3.6,4.3,1.8,4.0
+];
+
+const sellers=sellerNames.map((name,i)=>({
+ id:i+1,name,
+ category:categories[i%categories.length],
+ rating:sampleRatings[i],
+ reviews:17+(i*13)%96,
+ emoji:["🛍️","📱","👗","🥑","🎧","👟","🍰","🏠","💄"][i%9],
+ comments:comments[i%comments.length]
+}));
+
+const clients=Array.from({length:200},(_,i)=>({
+ name:people[i%people.length],id:i+1
+}));
+
+let orders=JSON.parse(localStorage.getItem("ngwaiOrders")||"[]");
+
+function showTab(id){
+ document.querySelectorAll(".section").forEach(s=>s.classList.toggle("active",s.id===id));
+ document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.tab===id));
+ if(id==="orders")renderOrders();
+ if(id==="streak")renderStreak();
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+
+document.querySelectorAll(".nav button").forEach(b=>
+ b.addEventListener("click",()=>showTab(b.dataset.tab))
+);
+
+function stars(n){
+ return "★".repeat(Math.round(n))+"☆".repeat(5-Math.round(n));
+}
+
+function renderSellers(filter=""){
+ document.getElementById("sellerGrid").innerHTML=
+ sellers.filter(s=>s.name.toLowerCase().includes(filter.toLowerCase())||s.category.toLowerCase().includes(filter.toLowerCase()))
+ .map(s=>`
+ <article class="card seller-card">
+  <div class="seller-head">
+   <div class="avatar">${s.emoji}</div>
+   <div><h3>${s.name}</h3><span class="pill">${s.category}</span></div>
+  </div>
+  <p><span class="stars">${stars(s.rating)}</span> <b>${s.rating.toFixed(1)}/5</b></p>
+  <p class="small muted">${s.reviews} sample feedback entries · simulated profile</p>
+  <p class="small">“${s.comments[0]}”</p>
+  <div class="actions">
+   <button onclick="placeOrder(${s.id})">Order</button>
+   <button class="secondary" onclick="makeContact(${s.id})">Contact seller</button>
+  </div>
+ </article>`).join("");
+}
+
+document.getElementById("sellerSearch").addEventListener("input",e=>renderSellers(e.target.value));
+
+function saveOrders(){
+ localStorage.setItem("ngwaiOrders",JSON.stringify(orders));
+ renderOrders();
+}
+
+function placeOrder(id){
+ const s=sellers.find(x=>x.id===id);
+ const o={
+  id:"NG"+Date.now().toString().slice(-8),
+  sellerId:id,seller:s.name,
+  orderedAt:new Date().toISOString(),
+  status:"Ordered",deliveredAt:null,rating:null,feedback:""
+ };
+ orders.unshift(o);
+ saveOrders();
+ openModal("Order placed",`
+ <p>Your test order with <b>${s.name}</b> has been recorded.</p>
+ <p>Order reference: <b>${o.id}</b></p>
+ <p>Order time: ${new Date(o.orderedAt).toLocaleString()}</p>
+ <div class="notice">This is a simulated order. No payment or real dispatch has occurred.</div>
+ <button onclick="closeModal();showTab('orders')">View my orders</button>`);
+}
+
+function makeDelivery(id){
+ const o=orders.find(x=>x.id===id);
+ if(!o||o.status==="Delivered")return;
+ o.deliveredAt=new Date().toISOString();
+ o.status="Delivered";
+ saveOrders();
+ openModal("Delivery marked complete",`
+ <p>Delivery for <b>${o.seller}</b> has been marked complete.</p>
+ <p>Elapsed time: <b>${duration(new Date(o.deliveredAt)-new Date(o.orderedAt))}</b></p>
+ <p>How satisfied were you with this experience?</p>
+ <div class="stars-input" id="ratingPick">
+ ${[1,2,3,4,5].map(n=>`<button onclick="chooseRating(${n})">★</button>`).join("")}
+ </div>
+ <textarea id="feedbackText" rows="3" placeholder="Tell the seller what went well or what could improve..." style="width:100%;margin:10px 0;background:#0d1727;color:white;border:1px solid var(--line);border-radius:10px;padding:10px"></textarea>
+ <button onclick="submitFeedback('${id}')">Submit satisfaction</button>
+ <p class="small muted">This delivery completion is simulated.</p>`);
+}
+
+let chosenRating=0;
+
+function chooseRating(n){
+ chosenRating=n;
+ document.querySelectorAll("#ratingPick button").forEach((b,i)=>b.classList.toggle("chosen",i<n));
+}
+
+function submitFeedback(id){
+ const o=orders.find(x=>x.id===id);
+ if(!chosenRating)return alert("Please choose a star rating.");
+ o.rating=chosenRating;
+ o.feedback=document.getElementById("feedbackText").value.trim();
+ saveOrders();
+ closeModal();
+ alert("Thank you. Your sample satisfaction feedback has been saved.");
+ chosenRating=0;
+}
+
+function duration(ms){
+ let mins=Math.max(0,Math.floor(ms/60000));
+ let h=Math.floor(mins/60),m=mins%60;
+ return h?`${h} hr ${m} min`:`${m} min`;
+}
+
+function renderOrders(){
+ const el=document.getElementById("orderList");
+ if(!orders.length){
+  el.innerHTML='<div class="card muted">No orders yet. Visit Sellers and place a test order.</div>';
+  return;
+ }
+ el.innerHTML=orders.map(o=>`
+ <div class="order">
+  <div class="row"><b>${o.seller}</b><span class="pill">${o.status}</span></div>
+  <p class="small muted">Reference ${o.id}</p>
+  <p class="small">Ordered: ${new Date(o.orderedAt).toLocaleString()}</p>
+  ${o.deliveredAt?`<p class="small">Delivered: ${new Date(o.deliveredAt).toLocaleString()} · Duration: ${duration(new Date(o.deliveredAt)-new Date(o.orderedAt))}</p>`:""}
+  ${o.rating?`<p class="stars">${stars(o.rating)} <span class="muted small">${o.rating}/5</span></p><p class="small">${escapeHtml(o.feedback||"No written comment.")}</p>`:""}
+  ${o.status==="Ordered"?`<button onclick="makeDelivery('${o.id}')">Make Delivery</button>`:o.rating===null?`<button class="secondary" onclick="makeDelivery('${o.id}')">Rate delivery</button>`:""}
+ </div>`).join("");
+}
+
+function makeContact(id){
+ const s=sellers.find(x=>x.id===id);
+ openModal("Contact "+s.name,`
+ <p>Choose how you would like to contact this sample seller.</p>
+ <div class="notice">This seller profile is simulated and has no verified contact details yet.</div>
+ <button class="secondary" onclick="alert('Add a real seller phone number before enabling WhatsApp contact.')">WhatsApp contact (setup required)</button>`);
+}
+
+function openModal(title,body){
+ document.getElementById("modalTitle").textContent=title;
+ document.getElementById("modalBody").innerHTML=body;
+ document.getElementById("modal").classList.add("show");
+}
+
+function closeModal(){
+ document.getElementById("modal").classList.remove("show");
+}
+
+function escapeHtml(s){
+ return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+const memes=[
+["📦","Me: I hope my delivery comes early.<br>Also me: checking the tracking every 14 seconds."],
+["🚚","Delivery rider: I'm nearby.<br>Me: Defines nearby."],
+["⭐","Seller after one five-star review: We are basically family now."],
+["😅","Order placed.<br>Bank balance: We need to talk."],
+["📱","Customer: Any update?<br>Seller: Your patience is being delivered separately."],
+["😂","When the package arrives and it is exactly what you ordered. A rare victory."]
+];
+
+document.getElementById("memeGrid").innerHTML=memes.map(m=>`
+ <div class="card"><div class="meme">${m[0]}</div><p>${m[1]}</p><span class="pill">NGWAI meme</span></div>
+`).join("");
+
+const streakKey="ngwai90streak";
+
+function getStreak(){
+ return JSON.parse(localStorage.getItem(streakKey)||'{"days":[]}');
+}
+
+function renderStreak(){
+ const data=getStreak(),days=data.days||[];
+ const today=new Date().toLocaleDateString("en-CA");
+ const done=days.some(d=>d.date===today);
+ let current=0;
+
+ if(days.length){
+  const sorted=[...days].sort((a,b)=>b.date.localeCompare(a.date));
+  let date=new Date(sorted[0].date+"T12:00:00");
+  if(sorted[0].date===today||sorted[0].date===new Date(Date.now()-86400000).toLocaleDateString("en-CA")){
+   for(const d of sorted){
+    if(d.date===date.toLocaleDateString("en-CA")){
+     current++;
+     date.setDate(date.getDate()-1);
+    }else break;
+   }
+  }
+ }
+
+ document.getElementById("streakCount").textContent=current;
+ document.getElementById("daysDone").textContent=days.length;
+ document.getElementById("daysLeft").textContent=Math.max(0,90-days.length);
+ document.getElementById("streakBar").style.width=Math.min(100,days.length/90*100)+"%";
+ document.getElementById("streakMessage").textContent=done?"Today's progress is already marked. Come back tomorrow.":`You have ${90-days.length} days left in your challenge.`;
+ document.getElementById("checkinBtn").disabled=done||days.length>=90;
+ document.getElementById("checkinBtn").textContent=done?"Today's progress marked":"Mark today's progress";
+ document.getElementById("streakHistory").innerHTML=
+ days.slice().reverse().map(d=>`
+ <div class="order"><b>${d.date}</b><p class="small muted">${escapeHtml(d.note||"Progress check-in")}</p></div>
+ `).join("")||'<p class="muted small">Your check-ins will appear here.</p>';
+}
+
+function checkIn(){
+ const note=document.getElementById("streakNote").value.trim();
+ if(!note)return alert("Write one short note about today's website progress.");
+ const data=getStreak();
+ const today=new Date().toLocaleDateString("en-CA");
+ if(data.days.some(d=>d.date===today))return renderStreak();
+ data.days.push({date:today,note});
+ localStorage.setItem(streakKey,JSON.stringify(data));
+ document.getElementById("streakNote").value="";
+ renderStreak();
+}
+
+renderSellers();
+renderOrders();
+renderStreak();
+</script>
+</body>
+</html>
