@@ -6,33 +6,58 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#080d17">
 <title>NGWAI — Orders. Delivery. Trust.</title>
+
 <style>
-:root{--bg:#080d17;--panel:#121d2e;--line:#2a3a52;--text:#edf3fb;--muted:#a9b8ca;--accent:#f4b942;--green:#36c995;--red:#ff7777}
-*{box-sizing:border-box;text-shadow:0 0 5px rgba(220,235,255,.18)}
-body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,sans-serif;position:relative}
-body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;background-image:linear-gradient(rgba(8,13,23,.91),rgba(8,13,23,.96)),url('ngwai-logo.jpg');background-repeat:no-repeat;background-position:center;background-size:min(72vw,650px)}
+:root{
+  --bg:#080d17;--panel:#121d2e;--line:#2a3a52;
+  --text:#edf3fb;--muted:#a9b8ca;--accent:#f4b942;
+  --green:#36c995;--red:#ff7777;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font:15px/1.5 system-ui,sans-serif;position:relative;
+}
+body:before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
+  background:url("ngwai-logo.jpg") center center/contain no-repeat;
+  opacity:.24;
+}
 button,input,select,textarea{font:inherit}
-button{cursor:pointer;border:0;border-radius:12px;padding:11px 15px;font-weight:700;background:var(--accent);color:#172033}
+button{
+  cursor:pointer;border:0;border-radius:12px;padding:11px 15px;
+  font-weight:700;background:var(--accent);color:#172033;
+}
 button.secondary{background:#263750;color:white;border:1px solid var(--line)}
 button.ghost{background:transparent;color:white;border:1px solid var(--line)}
+button.danger{background:#702f3a;color:white;border:1px solid #a94d5c}
 button:disabled{opacity:.45;cursor:not-allowed}
-.wrap{max-width:1180px;margin:auto;padding:18px}
+.wrap{max-width:1180px;margin:auto;padding:16px}
 .top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 0 20px}
+.brand-wrap{display:flex;align-items:center;gap:11px}
 .brand{font-size:28px;font-weight:950;letter-spacing:3px}
 .brand small{display:block;font-size:10px;letter-spacing:2px;color:var(--muted)}
-.brand-wrap{display:flex;align-items:center;gap:11px}
-.brandmark{width:48px;height:48px;object-fit:contain;border-radius:12px;background:white;padding:3px;border:1px solid var(--line);box-shadow:0 0 12px rgba(244,185,66,.16)}
-.nav{display:flex;gap:8px;flex-wrap:wrap}
-.nav button{background:transparent;color:var(--muted);border:1px solid var(--line)}
+.brandmark{width:55px;height:55px;object-fit:contain;border-radius:12px}
+.menu-area{margin-bottom:20px}
+.menu-toggle{width:48px;height:44px;display:grid;place-content:center;gap:5px;background:#17263a;border:1px solid var(--line)}
+.menu-toggle span{width:23px;height:2px;background:white;display:block;border-radius:4px}
+.nav{
+  display:none;gap:8px;flex-wrap:wrap;margin-top:10px;
+  padding:10px 0;overflow-x:auto;
+}
+.nav.open{display:flex}
+.nav button{background:#17263a;color:var(--muted);border:1px solid var(--line);white-space:nowrap}
 .nav button.active{background:var(--accent);color:#172033}
-.hero{background:linear-gradient(130deg,#1b2d46,#172236 60%,#3b3020);border:1px solid var(--line);border-radius:22px;padding:28px;margin-bottom:18px}
+.hero{
+  background:linear-gradient(130deg,rgba(27,45,70,.91),rgba(23,34,54,.9) 60%,rgba(59,48,32,.9));
+  border:1px solid var(--line);border-radius:22px;padding:28px;margin-bottom:18px;
+}
 .hero h1{font-size:clamp(30px,6vw,54px);line-height:1.05}
 .hero p{max-width:650px;color:#d2deed}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:14px}
-.card{background:rgba(18,29,46,.94);border:1px solid var(--line);border-radius:17px;padding:17px}
-.row{display:flex;align-items:center;justify-content:space-between;gap:10px}
-.muted{color:var(--muted)}
-.small{font-size:12px}
+.card{background:rgba(18,29,46,.78);border:1px solid var(--line);border-radius:17px;padding:17px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.muted{color:var(--muted)}.small{font-size:12px}
 .pill{display:inline-block;padding:4px 9px;border-radius:99px;background:#25364d;color:#cbd8e8;font-size:11px}
 .stars{color:var(--accent);letter-spacing:2px}
 .avatar{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;background:#263a56;font-size:24px}
@@ -41,185 +66,296 @@ button:disabled{opacity:.45;cursor:not-allowed}
 .seller-card p{margin:10px 0}
 .seller-card .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}
 .seller-card button{flex:1}
-.section{display:none}
-.section.active{display:block}
+.section{display:none}.section.active{display:block}
 .field{display:grid;gap:6px;margin:10px 0}
-.field input,.field select,.field textarea{width:100%;background:#0d1727;border:1px solid var(--line);border-radius:10px;padding:12px;color:white}
-.modal{position:fixed;inset:0;background:#000a;display:none;align-items:center;justify-content:center;padding:16px;z-index:10}
-.modal.show{display:flex}
-.modalbox{width:min(520px,100%);max-height:90vh;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px}
-.stars-input button{background:transparent;color:#63748b;font-size:28px;padding:3px}
-.stars-input button.chosen{color:var(--accent)}
-.notice{padding:12px;border-radius:12px;background:#24364c;color:#dce7f5;margin:12px 0}
-.good{color:var(--green)}
-.bad{color:var(--red)}
+.field input,.field select,.field textarea{
+  width:100%;background:#0d1727;border:1px solid var(--line);
+  border-radius:10px;padding:12px;color:white;
+}
+.notice{padding:12px;border-radius:12px;background:rgba(36,54,76,.78);color:#dce7f5;margin:12px 0}
+.good{color:var(--green)}.bad{color:var(--red)}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:15px 0}
-.stat{background:#101a2a;padding:13px;border-radius:13px}
+.stat{background:rgba(16,26,42,.8);padding:13px;border-radius:13px}
 .stat strong{display:block;font-size:24px}
 .list{display:grid;gap:10px}
-.order{border:1px solid var(--line);border-radius:13px;padding:13px;background:#101a2a}
-.meme{font-size:45px;text-align:center;padding:15px}
-.progress{height:10px;background:#25344a;border-radius:20px;overflow:hidden}
-.progress span{display:block;height:100%;background:var(--green)}
+.order{border:1px solid var(--line);border-radius:13px;padding:13px;background:rgba(16,26,42,.85)}
 .footer{text-align:center;color:var(--muted);font-size:12px;padding:30px 0}
 .hide{display:none!important}
-.age-gate{position:fixed;inset:0;background:rgba(2,5,10,.97);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px}
-.age-card{width:min(440px,100%);background:#111c2c;border:1px solid #45536a;border-radius:20px;padding:27px;text-align:center;box-shadow:0 0 24px rgba(180,205,255,.12)}
+.age-gate{
+  position:fixed;inset:0;background:transparent;z-index:9999;
+  display:flex;align-items:center;justify-content:center;padding:20px;
+}
+.age-card{
+  width:min(440px,100%);background:rgba(17,28,44,.92);
+  border:1px solid #45536a;border-radius:20px;padding:27px;
+  text-align:center;box-shadow:0 0 24px rgba(180,205,255,.12);
+}
 .age-logo{width:76px;height:76px;object-fit:contain;border-radius:16px}
 .age-actions{display:flex;gap:12px;margin-top:22px}
 .age-actions button{flex:1;padding:14px}
 .age-no{background:#28364a!important;color:white!important;border:1px solid #64748b!important}
-@media(max-width:600px){.wrap{padding:13px}.hero{padding:20px}.nav{width:100%}.nav button{flex:1;padding:9px 6px;font-size:12px}.stats{grid-template-columns:1fr 1fr 1fr}.brand{font-size:24px}}
+
+/* Transparent modal backdrop */
+.modal{
+  position:fixed;inset:0;background:transparent;display:none;
+  align-items:center;justify-content:center;padding:16px;z-index:100;
+}
+.modal.show{display:flex}
+.modalbox{
+  width:min(520px,100%);max-height:90vh;overflow:auto;
+  background:rgba(18,29,46,.94);border:1px solid var(--line);
+  border-radius:18px;padding:20px;
+}
+.stars-input button{background:transparent;color:#63748b;font-size:28px;padding:3px}
+.stars-input button.chosen{color:var(--accent)}
+.feed{max-width:650px;margin:auto;display:grid;gap:18px}
+.feed-post{overflow:hidden;padding:0}
+.feed-post-head{padding:13px 15px}
+.feed-image{
+  width:100%;max-height:650px;object-fit:contain;
+  display:block;background:#05080e;cursor:pointer;
+}
+.feed-actions{display:flex;gap:8px;flex-wrap:wrap;padding:12px 15px}
+.feed-caption{padding:0 15px 12px}
+.feed-comments{padding:0 15px 14px}
+.feed-comments p{margin:6px 0;font-size:13px}
+.feed-comment-form{display:flex;gap:7px;margin-top:10px}
+.feed-comment-form input{flex:1;min-width:0;background:#0d1727;color:white;border:1px solid var(--line);border-radius:9px;padding:10px}
+.upload-box{padding:16px;border:1px dashed #657a96;border-radius:15px;margin-bottom:18px;background:rgba(18,29,46,.7)}
+.upload-box input{max-width:100%}
+.floating-plus{
+  position:fixed;right:20px;bottom:22px;width:58px;height:58px;
+  border-radius:50%;font-size:30px;padding:0;z-index:20;
+  box-shadow:0 5px 22px #0008;
+}
+@media(max-width:600px){
+  .wrap{padding:13px}.hero{padding:20px}
+  .stats{grid-template-columns:1fr 1fr 1fr}
+  .brand{font-size:24px}
+  .nav button{padding:9px 12px;font-size:12px}
+}
 </style>
 </head>
+
 <body>
 
+<!-- AGE GATE -->
 <div class="age-gate" id="ageGate" role="dialog" aria-modal="true">
- <div class="age-card" id="ageCard">
-  <img src="ngwai-logo.jpg" alt="NGWAI logo" class="age-logo" onerror="this.style.display='none'">
-  <h1>Before you enter NGWAI</h1>
-  <p>This website is intended for adults aged 18 years and above. Are you 18 or older?</p>
-  <div class="age-actions">
-   <button class="age-no" onclick="denyAge()">NO</button>
-   <button onclick="acceptAge()">YES, ENTER</button>
+  <div class="age-card" id="ageCard">
+    <img src="ngwai-logo.jpg" alt="NGWAI logo" class="age-logo"
+         onerror="this.style.display='none'">
+    <h1>Before you enter NGWAI</h1>
+    <p>This website is intended for adults aged 18 years and above. Are you 18 or older?</p>
+    <div class="age-actions">
+      <button class="age-no" onclick="denyAge()">NO</button>
+      <button onclick="acceptAge()">YES</button>
+    </div>
   </div>
-  <p class="small muted">Please answer honestly to continue.</p>
- </div>
 </div>
 
 <div class="wrap">
 <header class="top">
- <div class="brand-wrap">
-  <img class="brandmark" src="ngwai-logo.jpg" alt="NGWAI logo">
-  <div class="brand">NGWAI<small>ORDERS · DELIVERY · TRUST</small></div>
- </div>
- <div class="row">
-  <span id="userLabel" class="muted small">Not signed in</span>
-  <button id="logoutBtn" class="secondary hide" onclick="logout()">Sign out</button>
- </div>
+  <div class="brand-wrap">
+    <img class="brandmark" src="ngwai-logo.jpg" alt="NGWAI logo">
+    <div class="brand">NGWAI<small>ORDERS · DELIVERY · TRUST</small></div>
+  </div>
+  <div class="row">
+    <span id="userLabel" class="muted small">Not signed in</span>
+    <button id="logoutBtn" class="secondary hide" onclick="logout()">Sign out</button>
+  </div>
 </header>
 
-<nav class="nav">
- <button class="active" data-tab="home">Home</button>
- <button data-tab="sellers">Sellers</button>
- <button data-tab="orders">Orders</button>
- <button data-tab="memes">Memes</button>
- <button data-tab="streak">90-day streak</button>
- <button data-tab="account">Sign in</button>
-</nav>
+<!-- HAMBURGER NAVIGATION -->
+<div class="menu-area">
+  <button class="menu-toggle" id="menuToggle" aria-label="Open menu"
+          aria-expanded="false" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </button>
+  <nav class="nav" id="mainNav">
+    <button class="active" data-tab="home">Home</button>
+    <button data-tab="sellers">Sellers</button>
+    <button data-tab="orders">Orders</button>
+    <button data-tab="feed">Moments</button>
+    <button data-tab="account">Sign in</button>
+  </nav>
+</div>
 
+<!-- HOME -->
 <section id="home" class="section active">
- <div class="hero">
-  <span class="pill">NGWAI TEST ENVIRONMENT</span>
-  <h1>Order with confidence.<br>Track every delivery.</h1>
-  <p>Discover sellers, place an order, follow delivery progress and tell us how the experience went.</p>
-  <div class="row" style="justify-content:flex-start;flex-wrap:wrap">
-   <button onclick="showTab('sellers')">Explore sellers</button>
-   <button class="secondary" onclick="showTab('account')">Test sign-in</button>
+  <div class="hero">
+    <span class="pill">WELCOME TO NGWAI</span>
+    <h1>Order with confidence.<br>Track every delivery.</h1>
+    <p>Discover sellers, place an order, follow delivery progress and share your moments with the NGWAI community.</p>
+    <div class="row" style="justify-content:flex-start">
+      <button onclick="showTab('sellers')">Explore sellers</button>
+      <button class="secondary" onclick="showTab('account')">Sign in</button>
+    </div>
   </div>
- </div>
- <div class="stats">
-  <div class="stat"><strong>27</strong><span class="muted small">Sample sellers</span></div>
-  <div class="stat"><strong>200</strong><span class="muted small">Anonymous sample clients</span></div>
-  <div class="stat"><strong>90</strong><span class="muted small">Days of progress</span></div>
- </div>
- <div class="grid">
-  <div class="card"><h3>How ordering works</h3><p class="muted">Choose a seller, press Order, and NGWAI records the order time. When the seller completes delivery, press Make Delivery. The customer can then rate the experience.</p></div>
-  <div class="card"><h3>Delivery transparency</h3><p class="muted">Each test order records order time, delivery time, elapsed duration and customer feedback.</p></div>
- </div>
- <div class="notice"><b>Prototype notice:</b> Seller profiles, ratings, comments and delivery actions are sample data. No real purchase, payment or courier dispatch occurs.</div>
-</section>
 
-<section id="sellers" class="section">
- <div class="row">
-  <div><h2>Discover sellers</h2><p class="muted">27 independent sample profiles · mixed feedback</p></div>
-  <input id="sellerSearch" placeholder="Search sellers..." style="max-width:210px;background:#0d1727;border:1px solid var(--line);padding:10px;border-radius:10px;color:white">
- </div>
- <div id="sellerGrid" class="grid"></div>
-</section>
-
-<section id="orders" class="section">
- <h2>Your orders</h2>
- <p class="muted">Orders created in this browser.</p>
- <div id="orderList" class="list"><div class="card muted">No orders yet. Visit Sellers and place a test order.</div></div>
-</section>
-
-<section id="memes" class="section">
- <h2>NGWAI Meme Corner</h2>
- <p class="muted">A little humour while your order is on its way.</p>
- <div class="grid" id="memeGrid"></div>
-</section>
-
-<section id="streak" class="section">
- <div class="card">
-  <div class="row"><div><h2>90-day builder streak</h2><p class="muted">One honest progress check-in per day.</p></div><span class="pill">DAY BY DAY</span></div>
   <div class="stats">
-   <div class="stat"><strong id="streakCount">0</strong><span class="muted small">Current streak</span></div>
-   <div class="stat"><strong id="daysDone">0</strong><span class="muted small">Days completed</span></div>
-   <div class="stat"><strong id="daysLeft">90</strong><span class="muted small">Days remaining</span></div>
+    <div class="stat"><strong>27</strong><span class="muted small">Sample sellers</span></div>
+    <div class="stat"><strong>200</strong><span class="muted small">Sample clients</span></div>
+    <div class="stat"><strong>∞</strong><span class="muted small">Community moments</span></div>
   </div>
-  <div class="progress"><span id="streakBar" style="width:0%"></span></div>
-  <p id="streakMessage" class="muted">Start with your first website progress check-in.</p>
-  <div class="field"><label>What did you work on today?</label><textarea id="streakNote" rows="3" placeholder="Example: Created NGWAI repository and tested email sign-in..."></textarea></div>
-  <button id="checkinBtn" onclick="checkIn()">Mark today's progress</button>
-  <div id="streakHistory" class="list" style="margin-top:15px"></div>
-  <p class="small muted">The tracker saves check-ins in this browser. Report your progress in our conversations so we can keep the challenge going.</p>
- </div>
+
+  <div class="grid">
+    <div class="card">
+      <h3>How ordering works</h3>
+      <p class="muted">Choose a seller, place an order, and follow its progress. You can cancel an order if you change your mind before delivery is completed.</p>
+    </div>
+    <div class="card">
+      <h3>NGWAI Moments</h3>
+      <p class="muted">Share photos, like posts, leave comments, download images and share moments with others.</p>
+      <button class="secondary" onclick="showTab('feed')">Explore Moments</button>
+    </div>
+  </div>
+  <div class="notice">
+    Seller profiles and sample feedback are illustrative. Orders in this version are browser-based test records; no real payment or courier dispatch occurs.
+  </div>
 </section>
 
+<!-- SELLERS -->
+<section id="sellers" class="section">
+  <div class="row">
+    <div>
+      <h2>Discover sellers</h2>
+      <p class="muted">27 sample profiles · mixed sample feedback</p>
+    </div>
+    <input id="sellerSearch" placeholder="Search sellers..."
+      style="max-width:210px;background:#0d1727;border:1px solid var(--line);padding:10px;border-radius:10px;color:white">
+  </div>
+  <div id="sellerGrid" class="grid"></div>
+</section>
+
+<!-- ORDERS -->
+<section id="orders" class="section">
+  <h2>Your orders</h2>
+  <p class="muted">Orders placed in this browser.</p>
+  <div id="orderList" class="list">
+    <div class="card muted">No orders yet. Visit Sellers to place an order.</div>
+  </div>
+</section>
+
+<!-- PHOTO FEED -->
+<section id="feed" class="section">
+  <div class="row">
+    <div>
+      <h2>NGWAI Moments</h2>
+      <p class="muted">Photos, stories and moments from the community.</p>
+    </div>
+    <button onclick="showUpload()">＋ Add photo</button>
+  </div>
+
+  <div class="upload-box hide" id="uploadBox">
+    <h3>Share a moment</h3>
+    <div class="field">
+      <label for="postImage">Choose a photo</label>
+      <input id="postImage" type="file" accept="image/*">
+    </div>
+    <div class="field">
+      <label for="postCaption">Write a caption</label>
+      <textarea id="postCaption" rows="3" placeholder="What's happening?"></textarea>
+    </div>
+    <div class="row">
+      <button onclick="uploadPost()" id="uploadBtn">Publish photo</button>
+      <button class="secondary" onclick="hideUpload()">Cancel</button>
+    </div>
+    <p class="small muted">Sign in before uploading. Images are stored in Firebase Storage.</p>
+  </div>
+
+  <div id="feedStatus" class="notice">Sign in to publish a photo. Public posts will appear here.</div>
+  <div id="feedPosts" class="feed"></div>
+</section>
+
+<!-- ACCOUNT -->
 <section id="account" class="section">
- <h2>NGWAI account access</h2>
- <p class="muted">Test email, phone and Google authentication independently.</p>
- <div class="grid">
-  <div class="card">
-   <h3>Email and password</h3>
-   <div class="field"><label>Email</label><input id="email" type="email" placeholder="you@example.com" autocomplete="email"></div>
-   <div class="field"><label>Password</label><input id="password" type="password" placeholder="At least 6 characters" autocomplete="current-password"></div>
-   <div class="row"><button onclick="emailAuth('signup')">Create account</button><button class="secondary" onclick="emailAuth('login')">Sign in</button></div>
-   <button class="ghost" style="margin-top:10px;width:100%" onclick="resetPassword()">Reset password</button>
+  <h2>NGWAI account access</h2>
+  <p class="muted">Sign in using email, phone number or Google.</p>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Email and password</h3>
+      <div class="field">
+        <label>Email</label>
+        <input id="email" type="email" placeholder="you@example.com" autocomplete="email">
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input id="password" type="password" placeholder="At least 6 characters" autocomplete="current-password">
+      </div>
+      <div class="row">
+        <button onclick="emailAuth('signup')">Create account</button>
+        <button class="secondary" onclick="emailAuth('login')">Sign in</button>
+      </div>
+      <button class="ghost" style="margin-top:10px;width:100%" onclick="resetPassword()">Reset password</button>
+    </div>
+
+    <div class="card">
+      <h3>Phone number</h3>
+      <p class="small muted">Use international format, for example +2547XXXXXXXX.</p>
+      <div class="field">
+        <label>Phone number</label>
+        <input id="phone" type="tel" placeholder="+2547XXXXXXXX" autocomplete="tel">
+      </div>
+      <button onclick="sendCode()">Send verification code</button>
+      <div class="field">
+        <label>SMS verification code</label>
+        <input id="otp" inputmode="numeric" placeholder="Enter SMS code">
+      </div>
+      <button class="secondary" onclick="verifyCode()">Verify and sign in</button>
+      <div id="recaptcha-container"></div>
+    </div>
+
+    <div class="card">
+      <h3>Google</h3>
+      <p class="muted">Continue using your Google account.</p>
+      <button onclick="googleAuth()">Continue with Google</button>
+      <div class="notice small">Google sign-in requires the Google provider and your website domain to be enabled in Firebase.</div>
+    </div>
   </div>
-  <div class="card">
-   <h3>Phone number</h3>
-   <p class="small muted">Use international format, for example +2547XXXXXXXX.</p>
-   <div class="field"><label>Phone number</label><input id="phone" type="tel" placeholder="+2547XXXXXXXX" autocomplete="tel"></div>
-   <button onclick="sendCode()">Send verification code</button>
-   <div class="field"><label>SMS verification code</label><input id="otp" inputmode="numeric" placeholder="Enter SMS code"></div>
-   <button class="secondary" onclick="verifyCode()">Verify and sign in</button>
-   <div id="recaptcha-container"></div>
-  </div>
-  <div class="card">
-   <h3>Google</h3>
-   <p class="muted">Continue using your Google account.</p>
-   <button onclick="googleAuth()">Continue with Google</button>
-   <div class="notice small">Google sign-in requires the correct OAuth client, authorized domain and Firebase provider settings.</div>
-  </div>
- </div>
- <div id="authStatus" class="notice">Authentication status: waiting for configuration.</div>
- <div class="notice small"><b>Setup required:</b> Insert your Firebase configuration below. Enable Email/Password, Phone and Google providers in Firebase Authentication. Add your deployed domain to Authorized domains.</div>
+
+  <div id="authStatus" class="notice">Connecting to Firebase...</div>
 </section>
 
 <div class="footer">NGWAI · Orders. Delivery. Trust.</div>
 </div>
 
+<!-- FLOATING FEED BUTTON -->
+<button class="floating-plus" id="floatingPlus" title="Add a photo"
+        onclick="showTab('feed');showUpload()">＋</button>
+
+<!-- MODAL -->
 <div class="modal" id="modal">
- <div class="modalbox">
-  <div class="row"><h2 id="modalTitle">Details</h2><button class="ghost" onclick="closeModal()">✕</button></div>
-  <div id="modalBody"></div>
- </div>
+  <div class="modalbox">
+    <div class="row">
+      <h2 id="modalTitle">Details</h2>
+      <button class="ghost" onclick="closeModal()">✕</button>
+    </div>
+    <div id="modalBody"></div>
+  </div>
 </div>
 
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+
 import {
-getAuth,setPersistence,browserLocalPersistence,
-createUserWithEmailAndPassword,signInWithEmailAndPassword,
-sendPasswordResetEmail,GoogleAuthProvider,signInWithPopup,
-signInWithRedirect,getRedirectResult,RecaptchaVerifier,
-signInWithPhoneNumber,signOut,onAuthStateChanged
+  getAuth,setPersistence,browserLocalPersistence,
+  createUserWithEmailAndPassword,signInWithEmailAndPassword,
+  sendPasswordResetEmail,GoogleAuthProvider,signInWithPopup,
+  signInWithRedirect,getRedirectResult,RecaptchaVerifier,
+  signInWithPhoneNumber,signOut,onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-import {getFirestore,doc,setDoc,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
+import {
+  getFirestore,doc,setDoc,serverTimestamp,collection,
+  addDoc,onSnapshot,query,orderBy,deleteDoc
+} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
+import {
+  getStorage,ref,uploadBytes,getDownloadURL
+} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
+
+/* NGWAI FIREBASE WEB APP CONFIGURATION */
 const firebaseConfig = {
   apiKey: "AIzaSyC7n4hNexB2p9-KPKFBw5q_0tNkG4MmA08",
   authDomain: "ngwai-49c44.firebaseapp.com",
@@ -230,140 +366,439 @@ const firebaseConfig = {
   measurementId: "G-FSVDXB67HE"
 };
 
+/* IMPORTANT: use firebaseConfig, not CONFIG */
+const configured = Boolean(
+  firebaseConfig.apiKey &&
+  firebaseConfig.authDomain &&
+  firebaseConfig.projectId &&
+  firebaseConfig.appId
+);
 
-const configured=Object.values(CONFIG).every(v=>v&&!v.includes("PASTE_"));
-let auth,db,confirmation,recaptcha;
+let app=null,auth=null,db=null,storage=null;
+let confirmation=null,recaptcha=null,currentUser=null;
+let unsubscribeFeed=null;
 
-const status=(msg,bad=false)=>{
- const el=document.getElementById("authStatus");
- if(el){el.textContent=msg;el.className="notice "+(bad?"bad":"good");}
+const authStatus = (message,bad=false) => {
+  const el=document.getElementById("authStatus");
+  if(el){
+    el.textContent=message;
+    el.className="notice "+(bad?"bad":"good");
+  }
 };
 
+const feedStatus = (message,bad=false) => {
+  const el=document.getElementById("feedStatus");
+  if(el){
+    el.textContent=message;
+    el.className="notice "+(bad?"bad":"good");
+  }
+};
+
+function friendly(error){
+  const messages={
+    "auth/operation-not-allowed":"This sign-in provider is not enabled in Firebase Authentication.",
+    "auth/unauthorized-domain":"This website domain is not authorized in Firebase Authentication settings.",
+    "auth/invalid-api-key":"The Firebase API key is invalid. Check the web app configuration.",
+    "auth/invalid-phone-number":"Enter a valid international phone number.",
+    "auth/captcha-check-failed":"reCAPTCHA verification failed. Check your authorized domains.",
+    "auth/too-many-requests":"Too many attempts. Wait before trying again.",
+    "auth/popup-blocked":"Google sign-in popup was blocked.",
+    "auth/network-request-failed":"Network request failed. Check your internet connection.",
+    "storage/unauthorized":"Firebase Storage rules do not allow this upload.",
+    "permission-denied":"Firestore rules denied this action. Check your Firestore rules."
+  };
+  return (messages[error.code]||error.message||"Unknown error")
+    +" ["+(error.code||"no error code")+"]";
+}
+
 if(configured){
- try{
-  const app=initializeApp(CONFIG);
-  auth=getAuth(app);
-  db=getFirestore(app);
-  await setPersistence(auth,browserLocalPersistence);
+  try{
+    app=initializeApp(firebaseConfig);
+    auth=getAuth(app);
+    db=getFirestore(app);
+    storage=getStorage(app);
 
-  onAuthStateChanged(auth,async user=>{
-   document.getElementById("userLabel").textContent=user?(user.displayName||user.email||user.phoneNumber||"Signed in"):"Not signed in";
-   document.getElementById("logoutBtn").classList.toggle("hide",!user);
-   if(user){
-    try{
-     await setDoc(doc(db,"users",user.uid),{
-      uid:user.uid,
-      email:user.email||null,
-      phoneNumber:user.phoneNumber||null,
-      displayName:user.displayName||null,
-      lastSignIn:serverTimestamp()
-     },{merge:true});
-    }catch(e){console.warn("Profile write:",e.message);}
-   }
-  });
+    await setPersistence(auth,browserLocalPersistence);
 
-  try{await getRedirectResult(auth);}catch(e){status(friendly(e),true);}
-  status("Firebase initialized. Choose an authentication method to test.");
- }catch(e){status("Firebase setup error: "+friendly(e),true);}
+    onAuthStateChanged(auth,async user=>{
+      currentUser=user;
+      document.getElementById("userLabel").textContent=
+        user?(user.displayName||user.email||user.phoneNumber||"Signed in"):"Not signed in";
+      document.getElementById("logoutBtn").classList.toggle("hide",!user);
+      document.getElementById("floatingPlus").classList.toggle("hide",!user);
+
+      if(user){
+        try{
+          await setDoc(doc(db,"users",user.uid),{
+            uid:user.uid,
+            email:user.email||null,
+            phoneNumber:user.phoneNumber||null,
+            displayName:user.displayName||null,
+            lastSignIn:serverTimestamp()
+          },{merge:true});
+        }catch(error){console.warn("Profile update:",error);}
+
+        feedStatus("Signed in. You can publish photos and interact with posts.");
+      }else{
+        feedStatus("Sign in to publish photos, like posts and comment.");
+      }
+    });
+
+    try{await getRedirectResult(auth);}
+    catch(error){authStatus(friendly(error),true);}
+
+    authStatus("Firebase initialized successfully. Choose a sign-in method.");
+    startFeed();
+  }catch(error){
+    authStatus("Firebase initialization failed: "+friendly(error),true);
+  }
 }else{
- status("Firebase is not configured yet. Paste your NGWAI Firebase web config into CONFIG.",true);
+  authStatus("Firebase configuration is incomplete.",true);
 }
 
-function friendly(e){
- const map={
- "auth/operation-not-allowed":"This sign-in provider is not enabled in Firebase Authentication.",
- "auth/unauthorized-domain":"This website domain is not authorized in Firebase Authentication settings.",
- "auth/invalid-api-key":"The Firebase API key is invalid. Check the web app config.",
- "auth/invalid-phone-number":"Enter a valid international phone number.",
- "auth/captcha-check-failed":"reCAPTCHA verification failed. Check authorized domains.",
- "auth/too-many-requests":"Too many attempts. Wait before trying again.",
- "auth/popup-blocked":"Google sign-in popup was blocked.",
- "auth/network-request-failed":"Network request failed. Check your connection."
- };
- return (map[e.code]||e.message||"Unknown error")+" ["+(e.code||"no error code")+"]";
-}
-
+/* EMAIL AUTHENTICATION */
 window.emailAuth=async mode=>{
- if(!auth)return status("Firebase is not configured.",true);
- const email=document.getElementById("email").value.trim();
- const password=document.getElementById("password").value;
- if(!email||!password)return status("Enter both email and password.",true);
- try{
-  const cred=mode==="signup"
-   ?await createUserWithEmailAndPassword(auth,email,password)
-   :await signInWithEmailAndPassword(auth,email,password);
-  status((mode==="signup"?"Account created":"Signed in")+" successfully: "+cred.user.email);
- }catch(e){status(friendly(e),true);}
+  if(!auth)return authStatus("Firebase is not configured.",true);
+  const email=document.getElementById("email").value.trim();
+  const password=document.getElementById("password").value;
+  if(!email||!password)return authStatus("Enter both email and password.",true);
+
+  try{
+    const result=mode==="signup"
+      ?await createUserWithEmailAndPassword(auth,email,password)
+      :await signInWithEmailAndPassword(auth,email,password);
+    authStatus((mode==="signup"?"Account created":"Signed in")+" successfully: "+result.user.email);
+  }catch(error){authStatus(friendly(error),true);}
 };
 
 window.resetPassword=async()=>{
- if(!auth)return status("Firebase is not configured.",true);
- const email=document.getElementById("email").value.trim();
- if(!email)return status("Enter your email address first.",true);
- try{
-  await sendPasswordResetEmail(auth,email);
-  status("Password reset email sent. Check your inbox.");
- }catch(e){status(friendly(e),true);}
+  if(!auth)return authStatus("Firebase is not configured.",true);
+  const email=document.getElementById("email").value.trim();
+  if(!email)return authStatus("Enter your email address first.",true);
+  try{
+    await sendPasswordResetEmail(auth,email);
+    authStatus("Password reset email sent. Check your inbox.");
+  }catch(error){authStatus(friendly(error),true);}
 };
 
+/* GOOGLE AUTHENTICATION */
 window.googleAuth=async()=>{
- if(!auth)return status("Firebase is not configured.",true);
- try{
-  const provider=new GoogleAuthProvider();
-  provider.setCustomParameters({prompt:"select_account"});
-  await signInWithPopup(auth,provider);
-  status("Google sign-in successful.");
- }catch(e){
-  if(e.code==="auth/popup-blocked"||e.code==="auth/popup-closed-by-user"){
-   try{await signInWithRedirect(auth,new GoogleAuthProvider());}
-   catch(x){status(friendly(x),true);}
-  }else status(friendly(e),true);
- }
+  if(!auth)return authStatus("Firebase is not configured.",true);
+  try{
+    const provider=new GoogleAuthProvider();
+    provider.setCustomParameters({prompt:"select_account"});
+    await signInWithPopup(auth,provider);
+    authStatus("Google sign-in successful.");
+  }catch(error){
+    if(error.code==="auth/popup-blocked"||error.code==="auth/popup-closed-by-user"){
+      try{await signInWithRedirect(auth,new GoogleAuthProvider());}
+      catch(redirectError){authStatus(friendly(redirectError),true);}
+    }else{
+      authStatus(friendly(error),true);
+    }
+  }
 };
 
+/* PHONE AUTHENTICATION */
 window.sendCode=async()=>{
- if(!auth)return status("Firebase is not configured.",true);
- const phone=document.getElementById("phone").value.trim();
- if(!/^\+[1-9]\d{7,14}$/.test(phone))
-  return status("Use international phone format, e.g. +2547XXXXXXXX.",true);
- try{
-  if(!recaptcha)recaptcha=new RecaptchaVerifier(auth,"recaptcha-container",{size:"normal"});
-  confirmation=await signInWithPhoneNumber(auth,phone,recaptcha);
-  status("SMS sent. Enter the verification code.");
- }catch(e){
-  status(friendly(e),true);
-  try{recaptcha?.clear();recaptcha=null;}catch(_){}
- }
+  if(!auth)return authStatus("Firebase is not configured.",true);
+  const phone=document.getElementById("phone").value.trim();
+  if(!/^\+[1-9]\d{7,14}$/.test(phone)){
+    return authStatus("Use international phone format, e.g. +2547XXXXXXXX.",true);
+  }
+  try{
+    if(recaptcha)recaptcha.clear();
+    recaptcha=new RecaptchaVerifier(auth,"recaptcha-container",{size:"normal"});
+    confirmation=await signInWithPhoneNumber(auth,phone,recaptcha);
+    authStatus("SMS sent. Enter the verification code.");
+  }catch(error){
+    authStatus(friendly(error),true);
+    try{recaptcha?.clear();}catch(_){}
+    recaptcha=null;
+  }
 };
 
 window.verifyCode=async()=>{
- if(!confirmation)return status("Request an SMS code first.",true);
- const code=document.getElementById("otp").value.trim();
- try{
-  const result=await confirmation.confirm(code);
-  status("Phone verified and signed in: "+result.user.phoneNumber);
- }catch(e){status(friendly(e),true);}
+  if(!confirmation)return authStatus("Request an SMS code first.",true);
+  const code=document.getElementById("otp").value.trim();
+  if(!code)return authStatus("Enter the SMS verification code.",true);
+  try{
+    const result=await confirmation.confirm(code);
+    authStatus("Phone verified and signed in: "+result.user.phoneNumber);
+  }catch(error){authStatus(friendly(error),true);}
 };
 
+/* SIGN OUT */
 window.logout=async()=>{
- if(auth)try{await signOut(auth);status("Signed out.");}
- catch(e){status(friendly(e),true);}
+  if(!auth)return;
+  try{
+    await signOut(auth);
+    authStatus("Signed out.");
+  }catch(error){authStatus(friendly(error),true);}
 };
+
+/* PHOTO FEED */
+function startFeed(){
+  if(!db)return;
+  if(unsubscribeFeed)unsubscribeFeed();
+
+  const postsQuery=query(collection(db,"posts"),orderBy("createdAt","desc"));
+
+  unsubscribeFeed=onSnapshot(postsQuery,snapshot=>{
+    const posts=snapshot.docs.map(item=>({id:item.id,...item.data()}));
+    renderFeed(posts);
+    feedStatus(posts.length
+      ?posts.length+" community moment(s) loaded."
+      :"No photos yet. Be the first to share a moment.");
+  },error=>{
+    feedStatus("Could not load the feed: "+friendly(error),true);
+  });
+}
+
+function renderFeed(posts){
+  const container=document.getElementById("feedPosts");
+  if(!posts.length){
+    container.innerHTML='<div class="card muted">No moments have been shared yet.</div>';
+    return;
+  }
+
+  container.innerHTML=posts.map(post=>{
+    const caption=escapeHtml(post.caption||"");
+    const owner=escapeHtml(post.displayName||"NGWAI member");
+    const image=escapeHtml(post.imageUrl||"");
+    const postId=escapeHtml(post.id);
+    return `
+      <article class="card feed-post" data-post="${postId}">
+        <div class="feed-post-head">
+          <b>${owner}</b>
+          <div class="small muted">${formatDate(post.createdAt)}</div>
+        </div>
+        <img class="feed-image" src="${image}" alt="Community photo"
+             ondblclick="likePost('${postId}')">
+        <div class="feed-actions">
+          <button class="secondary" onclick="likePost('${postId}')">♥ Like</button>
+          <button class="secondary" onclick="sharePost('${postId}','${image}')">Share</button>
+          <button class="secondary" onclick="downloadPost('${image}')">Download</button>
+        </div>
+        ${caption?`<div class="feed-caption">${caption}</div>`:""}
+        <div class="feed-comments">
+          <div id="comments-${postId}" class="small muted">Loading comments...</div>
+          <div class="feed-comment-form">
+            <input id="comment-${postId}" placeholder="Write a comment...">
+            <button onclick="addComment('${postId}')">Send</button>
+          </div>
+        </div>
+      </article>`;
+  }).join("");
+
+  posts.forEach(post=>watchComments(post.id));
+}
+
+function formatDate(value){
+  if(!value)return "Just now";
+  const date=value.toDate?value.toDate():new Date(value);
+  return date.toLocaleString();
+}
+
+window.showUpload=()=>{
+  if(!currentUser){
+    showTab("account");
+    return authStatus("Please sign in before uploading a photo.",true);
+  }
+  document.getElementById("uploadBox").classList.remove("hide");
+  document.getElementById("postImage").scrollIntoView({behavior:"smooth",block:"center"});
+};
+
+window.hideUpload=()=>{
+  document.getElementById("uploadBox").classList.add("hide");
+};
+
+window.uploadPost=async()=>{
+  if(!currentUser)return feedStatus("Sign in before uploading.",true);
+  if(!storage||!db)return feedStatus("Firebase Storage or Firestore is unavailable.",true);
+
+  const file=document.getElementById("postImage").files[0];
+  const caption=document.getElementById("postCaption").value.trim();
+
+  if(!file)return feedStatus("Choose a photo first.",true);
+  if(!file.type.startsWith("image/"))return feedStatus("Please choose an image file.",true);
+  if(file.size>8*1024*1024)return feedStatus("Image must be smaller than 8 MB.",true);
+
+  const button=document.getElementById("uploadBtn");
+  button.disabled=true;
+  button.textContent="Uploading...";
+
+  try{
+    const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
+    const filePath=`post-images/${currentUser.uid}/${Date.now()}-${safeName}`;
+    const imageRef=ref(storage,filePath);
+
+    await uploadBytes(imageRef,file,{contentType:file.type});
+    const imageUrl=await getDownloadURL(imageRef);
+
+    await addDoc(collection(db,"posts"),{
+      uid:currentUser.uid,
+      displayName:currentUser.displayName||currentUser.email||"NGWAI member",
+      caption,
+      imageUrl,
+      storagePath:filePath,
+      createdAt:serverTimestamp()
+    });
+
+    document.getElementById("postImage").value="";
+    document.getElementById("postCaption").value="";
+    hideUpload();
+    feedStatus("Your photo has been published.");
+  }catch(error){
+    feedStatus("Upload failed: "+friendly(error),true);
+  }finally{
+    button.disabled=false;
+    button.textContent="Publish photo";
+  }
+};
+
+/* LIKES: one like per signed-in user per post */
+window.likePost=async postId=>{
+  if(!currentUser)return feedStatus("Sign in to like photos.",true);
+  try{
+    const likeRef=doc(db,"posts",postId,"likes",currentUser.uid);
+    await setDoc(likeRef,{
+      uid:currentUser.uid,
+      createdAt:serverTimestamp()
+    });
+    feedStatus("You liked this moment.");
+  }catch(error){feedStatus("Could not like post: "+friendly(error),true);}
+};
+
+/* COMMENTS */
+const commentUnsubscribers={};
+
+function watchComments(postId){
+  if(commentUnsubscribers[postId])return;
+  const commentsQuery=query(
+    collection(db,"posts",postId,"comments"),
+    orderBy("createdAt","asc")
+  );
+
+  commentUnsubscribers[postId]=onSnapshot(commentsQuery,snapshot=>{
+    const target=document.getElementById("comments-"+postId);
+    if(!target)return;
+    const comments=snapshot.docs.map(item=>item.data());
+    target.innerHTML=comments.length
+      ?comments.map(comment=>`<p><b>${escapeHtml(comment.displayName||"Member")}:</b> ${escapeHtml(comment.text||"")}</p>`).join("")
+      :"No comments yet.";
+  },error=>{
+    const target=document.getElementById("comments-"+postId);
+    if(target)target.textContent="Comments unavailable.";
+  });
+}
+
+window.addComment=async postId=>{
+  if(!currentUser)return feedStatus("Sign in to comment.",true);
+  const input=document.getElementById("comment-"+postId);
+  const message=input.value.trim();
+  if(!message)return;
+  try{
+    await addDoc(collection(db,"posts",postId,"comments"),{
+      uid:currentUser.uid,
+      displayName:currentUser.displayName||currentUser.email||"NGWAI member",
+      text:message,
+      createdAt:serverTimestamp()
+    });
+    input.value="";
+  }catch(error){feedStatus("Could not add comment: "+friendly(error),true);}
+};
+
+/* SHARE AND DOWNLOAD */
+window.sharePost=async(postId,imageUrl)=>{
+  const shareData={
+    title:"NGWAI Moment",
+    text:"Check out this moment on NGWAI",
+    url:imageUrl
+  };
+  try{
+    if(navigator.share)await navigator.share(shareData);
+    else if(navigator.clipboard){
+      await navigator.clipboard.writeText(imageUrl);
+      feedStatus("Image link copied.");
+    }else{
+      window.prompt("Copy this image link:",imageUrl);
+    }
+  }catch(error){
+    if(error.name!=="AbortError")feedStatus("Sharing was not available.",true);
+  }
+};
+
+window.downloadPost=async imageUrl=>{
+  try{
+    const response=await fetch(imageUrl);
+    const blob=await response.blob();
+    const objectUrl=URL.createObjectURL(blob);
+    const link=document.createElement("a");
+    link.href=objectUrl;
+    link.download="ngwai-moment";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(objectUrl);
+  }catch(error){
+    window.open(imageUrl,"_blank");
+  }
+};
+
+/* GENERAL HELPERS */
+function escapeHtml(value){
+  return String(value).replace(/[&<>"']/g,char=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[char]));
+}
 </script>
 
 <script>
+/* AGE GATE */
 function acceptAge(){
- sessionStorage.setItem("ngwaiAgeConfirmed","yes");
- document.getElementById("ageGate").style.display="none";
+  sessionStorage.setItem("ngwaiAgeConfirmed","yes");
+  document.getElementById("ageGate").style.display="none";
 }
 function denyAge(){
- document.getElementById("ageCard").innerHTML=
- '<h1>Access unavailable</h1><p>NGWAI is intended for visitors aged 18 and above. You cannot enter this website.</p><button class="age-no" onclick="window.location.href=\'about:blank\'">EXIT</button>';
+  document.getElementById("ageCard").innerHTML=
+    "<h1>Access unavailable</h1><p>NGWAI is intended for visitors aged 18 and above.</p><button onclick=\"window.location.href='about:blank'\">EXIT</button>";
 }
 if(sessionStorage.getItem("ngwaiAgeConfirmed")==="yes"){
- document.getElementById("ageGate").style.display="none";
+  document.getElementById("ageGate").style.display="none";
 }
 
+/* HAMBURGER MENU */
+function toggleMenu(){
+  const nav=document.getElementById("mainNav");
+  const button=document.getElementById("menuToggle");
+  nav.classList.toggle("open");
+  button.setAttribute("aria-expanded",nav.classList.contains("open")?"true":"false");
+}
+
+function showTab(id){
+  document.querySelectorAll(".section").forEach(section=>{
+    section.classList.toggle("active",section.id===id);
+  });
+  document.querySelectorAll("#mainNav button").forEach(button=>{
+    button.classList.toggle("active",button.dataset.tab===id);
+  });
+  document.getElementById("mainNav").classList.remove("open");
+  document.getElementById("menuToggle").setAttribute("aria-expanded","false");
+
+  if(id==="orders")renderOrders();
+  if(id==="feed")document.getElementById("floatingPlus").classList.toggle("hide",!window.currentUser);
+  else document.getElementById("floatingPlus").classList.add("hide");
+
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+window.showTab=showTab;
+
+document.querySelectorAll("#mainNav button").forEach(button=>{
+  button.addEventListener("click",()=>showTab(button.dataset.tab));
+});
+
+/* SELLER SAMPLE DATA */
 const sellerNames=[
 "Amani Fresh Mart","Kiboko Electronics","Maua Fashion House",
 "Jirani Grocers","Poa Phone Hub","Urban Sole","Tamu Treats",
@@ -386,239 +821,201 @@ const comments=[
 ["Affordable and exactly what I needed.","The delivery person was helpful; seller could improve updates.","Not a great experience. The order arrived late."]
 ];
 
-const people=[
-"Anonymous client","Customer 014","Guest buyer","Anonymous shopper",
-"Customer 082","Guest 119","Private customer","Customer 031"
-];
-
 const sampleRatings=[
 2.4,4.2,3.1,4.8,2.9,3.7,4.5,1.9,4.0,
 3.3,4.7,2.6,3.9,4.4,2.2,3.5,4.9,3.0,
 4.1,2.8,3.8,4.6,2.5,3.6,4.3,1.8,4.0
 ];
 
-const sellers=sellerNames.map((name,i)=>({
- id:i+1,name,
- category:categories[i%categories.length],
- rating:sampleRatings[i],
- reviews:17+(i*13)%96,
- emoji:["🛍️","📱","👗","🥑","🎧","👟","🍰","🏠","💄"][i%9],
- comments:comments[i%comments.length]
+const sellers=sellerNames.map((name,index)=>({
+  id:index+1,name,
+  category:categories[index%categories.length],
+  rating:sampleRatings[index],
+  reviews:17+(index*13)%96,
+  emoji:["🛍️","📱","👗","🥑","🎧","👟","🍰","🏠","💄"][index%9],
+  comments:comments[index%comments.length]
 }));
 
-const clients=Array.from({length:200},(_,i)=>({
- name:people[i%people.length],id:i+1
-}));
-
-let orders=JSON.parse(localStorage.getItem("ngwaiOrders")||"[]");
-
-function showTab(id){
- document.querySelectorAll(".section").forEach(s=>s.classList.toggle("active",s.id===id));
- document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.tab===id));
- if(id==="orders")renderOrders();
- if(id==="streak")renderStreak();
- window.scrollTo({top:0,behavior:"smooth"});
-}
-
-document.querySelectorAll(".nav button").forEach(b=>
- b.addEventListener("click",()=>showTab(b.dataset.tab))
-);
-
-function stars(n){
- return "★".repeat(Math.round(n))+"☆".repeat(5-Math.round(n));
+function stars(rating){
+  return "★".repeat(Math.round(rating))+"☆".repeat(5-Math.round(rating));
 }
 
 function renderSellers(filter=""){
- document.getElementById("sellerGrid").innerHTML=
- sellers.filter(s=>s.name.toLowerCase().includes(filter.toLowerCase())||s.category.toLowerCase().includes(filter.toLowerCase()))
- .map(s=>`
- <article class="card seller-card">
-  <div class="seller-head">
-   <div class="avatar">${s.emoji}</div>
-   <div><h3>${s.name}</h3><span class="pill">${s.category}</span></div>
-  </div>
-  <p><span class="stars">${stars(s.rating)}</span> <b>${s.rating.toFixed(1)}/5</b></p>
-  <p class="small muted">${s.reviews} sample feedback entries · simulated profile</p>
-  <p class="small">“${s.comments[0]}”</p>
-  <div class="actions">
-   <button onclick="placeOrder(${s.id})">Order</button>
-   <button class="secondary" onclick="makeContact(${s.id})">Contact seller</button>
-  </div>
- </article>`).join("");
+  const grid=document.getElementById("sellerGrid");
+  grid.innerHTML=sellers
+    .filter(seller=>seller.name.toLowerCase().includes(filter.toLowerCase())||
+      seller.category.toLowerCase().includes(filter.toLowerCase()))
+    .map(seller=>`
+      <article class="card seller-card">
+        <div class="seller-head">
+          <div class="avatar">${seller.emoji}</div>
+          <div><h3>${seller.name}</h3><span class="pill">${seller.category}</span></div>
+        </div>
+        <p><span class="stars">${stars(seller.rating)}</span>
+          <b>${seller.rating.toFixed(1)}/5</b></p>
+        <p class="small muted">${seller.reviews} sample feedback entries · illustrative profile</p>
+        <p class="small">“${seller.comments[0]}”</p>
+        <div class="actions">
+          <button onclick="placeOrder(${seller.id})">Order</button>
+          <button class="secondary" onclick="makeContact(${seller.id})">Contact seller</button>
+        </div>
+      </article>`).join("");
 }
 
-document.getElementById("sellerSearch").addEventListener("input",e=>renderSellers(e.target.value));
+document.getElementById("sellerSearch").addEventListener("input",event=>{
+  renderSellers(event.target.value);
+});
+
+/* ORDERS */
+let orders=[];
+try{orders=JSON.parse(localStorage.getItem("ngwaiOrders")||"[]");}
+catch(error){orders=[];}
 
 function saveOrders(){
- localStorage.setItem("ngwaiOrders",JSON.stringify(orders));
- renderOrders();
+  localStorage.setItem("ngwaiOrders",JSON.stringify(orders));
+  renderOrders();
 }
 
-function placeOrder(id){
- const s=sellers.find(x=>x.id===id);
- const o={
-  id:"NG"+Date.now().toString().slice(-8),
-  sellerId:id,seller:s.name,
-  orderedAt:new Date().toISOString(),
-  status:"Ordered",deliveredAt:null,rating:null,feedback:""
- };
- orders.unshift(o);
- saveOrders();
- openModal("Order placed",`
- <p>Your test order with <b>${s.name}</b> has been recorded.</p>
- <p>Order reference: <b>${o.id}</b></p>
- <p>Order time: ${new Date(o.orderedAt).toLocaleString()}</p>
- <div class="notice">This is a simulated order. No payment or real dispatch has occurred.</div>
- <button onclick="closeModal();showTab('orders')">View my orders</button>`);
+function placeOrder(sellerId){
+  const seller=sellers.find(item=>item.id===sellerId);
+  const order={
+    id:"NG"+Date.now().toString().slice(-8),
+    sellerId,
+    seller:seller.name,
+    orderedAt:new Date().toISOString(),
+    status:"Ordered",
+    deliveredAt:null,
+    rating:null,
+    feedback:""
+  };
+  orders.unshift(order);
+  saveOrders();
+
+  openModal("Order placed",`
+    <p>Your test order with <b>${seller.name}</b> has been recorded.</p>
+    <p>Order reference: <b>${order.id}</b></p>
+    <p>Order time: ${new Date(order.orderedAt).toLocaleString()}</p>
+    <div class="notice">This is a simulated order. No payment or real dispatch has occurred.</div>
+    <button onclick="closeModal();showTab('orders')">View my orders</button>
+  `);
 }
+window.placeOrder=placeOrder;
 
 function makeDelivery(id){
- const o=orders.find(x=>x.id===id);
- if(!o||o.status==="Delivered")return;
- o.deliveredAt=new Date().toISOString();
- o.status="Delivered";
- saveOrders();
- openModal("Delivery marked complete",`
- <p>Delivery for <b>${o.seller}</b> has been marked complete.</p>
- <p>Elapsed time: <b>${duration(new Date(o.deliveredAt)-new Date(o.orderedAt))}</b></p>
- <p>How satisfied were you with this experience?</p>
- <div class="stars-input" id="ratingPick">
- ${[1,2,3,4,5].map(n=>`<button onclick="chooseRating(${n})">★</button>`).join("")}
- </div>
- <textarea id="feedbackText" rows="3" placeholder="Tell the seller what went well or what could improve..." style="width:100%;margin:10px 0;background:#0d1727;color:white;border:1px solid var(--line);border-radius:10px;padding:10px"></textarea>
- <button onclick="submitFeedback('${id}')">Submit satisfaction</button>
- <p class="small muted">This delivery completion is simulated.</p>`);
+  const order=orders.find(item=>item.id===id);
+  if(!order||order.status!=="Ordered")return;
+
+  order.deliveredAt=new Date().toISOString();
+  order.status="Delivered";
+  saveOrders();
+
+  openModal("Delivery marked complete",`
+    <p>Delivery for <b>${escapeHtml(order.seller)}</b> has been marked complete.</p>
+    <p>Elapsed time: <b>${duration(new Date(order.deliveredAt)-new Date(order.orderedAt))}</b></p>
+    <p>How satisfied were you with this experience?</p>
+    <div class="stars-input" id="ratingPick">
+      ${[1,2,3,4,5].map(number=>`<button onclick="chooseRating(${number})">★</button>`).join("")}
+    </div>
+    <textarea id="feedbackText" rows="3" placeholder="Share your feedback..."
+      style="width:100%;margin:10px 0;background:#0d1727;color:white;border:1px solid var(--line);border-radius:10px;padding:10px"></textarea>
+    <button onclick="submitFeedback('${id}')">Submit satisfaction</button>
+  `);
 }
+window.makeDelivery=makeDelivery;
+
+function cancelOrder(id){
+  const order=orders.find(item=>item.id===id);
+  if(!order||order.status!=="Ordered")return;
+  if(!confirm("Are you sure you want to cancel this order?"))return;
+
+  order.status="Cancelled";
+  order.cancelledAt=new Date().toISOString();
+  saveOrders();
+}
+window.cancelOrder=cancelOrder;
 
 let chosenRating=0;
-
-function chooseRating(n){
- chosenRating=n;
- document.querySelectorAll("#ratingPick button").forEach((b,i)=>b.classList.toggle("chosen",i<n));
+function chooseRating(number){
+  chosenRating=number;
+  document.querySelectorAll("#ratingPick button").forEach((button,index)=>{
+    button.classList.toggle("chosen",index<number);
+  });
 }
+window.chooseRating=chooseRating;
 
 function submitFeedback(id){
- const o=orders.find(x=>x.id===id);
- if(!chosenRating)return alert("Please choose a star rating.");
- o.rating=chosenRating;
- o.feedback=document.getElementById("feedbackText").value.trim();
- saveOrders();
- closeModal();
- alert("Thank you. Your sample satisfaction feedback has been saved.");
- chosenRating=0;
+  const order=orders.find(item=>item.id===id);
+  if(!chosenRating)return alert("Please choose a star rating.");
+  order.rating=chosenRating;
+  order.feedback=document.getElementById("feedbackText").value.trim();
+  saveOrders();
+  closeModal();
+  chosenRating=0;
+  alert("Thank you. Your sample feedback has been saved.");
 }
+window.submitFeedback=submitFeedback;
 
-function duration(ms){
- let mins=Math.max(0,Math.floor(ms/60000));
- let h=Math.floor(mins/60),m=mins%60;
- return h?`${h} hr ${m} min`:`${m} min`;
+function duration(milliseconds){
+  const minutes=Math.max(0,Math.floor(milliseconds/60000));
+  const hours=Math.floor(minutes/60);
+  const remainder=minutes%60;
+  return hours?`${hours} hr ${remainder} min`:`${remainder} min`;
 }
 
 function renderOrders(){
- const el=document.getElementById("orderList");
- if(!orders.length){
-  el.innerHTML='<div class="card muted">No orders yet. Visit Sellers and place a test order.</div>';
-  return;
- }
- el.innerHTML=orders.map(o=>`
- <div class="order">
-  <div class="row"><b>${o.seller}</b><span class="pill">${o.status}</span></div>
-  <p class="small muted">Reference ${o.id}</p>
-  <p class="small">Ordered: ${new Date(o.orderedAt).toLocaleString()}</p>
-  ${o.deliveredAt?`<p class="small">Delivered: ${new Date(o.deliveredAt).toLocaleString()} · Duration: ${duration(new Date(o.deliveredAt)-new Date(o.orderedAt))}</p>`:""}
-  ${o.rating?`<p class="stars">${stars(o.rating)} <span class="muted small">${o.rating}/5</span></p><p class="small">${escapeHtml(o.feedback||"No written comment.")}</p>`:""}
-  ${o.status==="Ordered"?`<button onclick="makeDelivery('${o.id}')">Make Delivery</button>`:o.rating===null?`<button class="secondary" onclick="makeDelivery('${o.id}')">Rate delivery</button>`:""}
- </div>`).join("");
+  const container=document.getElementById("orderList");
+  if(!orders.length){
+    container.innerHTML='<div class="card muted">No orders yet. Visit Sellers to place an order.</div>';
+    return;
+  }
+
+  container.innerHTML=orders.map(order=>`
+    <div class="order">
+      <div class="row">
+        <b>${escapeHtml(order.seller)}</b>
+        <span class="pill">${escapeHtml(order.status)}</span>
+      </div>
+      <p class="small muted">Reference ${escapeHtml(order.id)}</p>
+      <p class="small">Ordered: ${new Date(order.orderedAt).toLocaleString()}</p>
+      ${order.deliveredAt?`<p class="small">Delivered: ${new Date(order.deliveredAt).toLocaleString()} · Duration: ${duration(new Date(order.deliveredAt)-new Date(order.orderedAt))}</p>`:""}
+      ${order.cancelledAt?`<p class="small bad">Cancelled: ${new Date(order.cancelledAt).toLocaleString()}</p>`:""}
+      ${order.rating?`<p class="stars">${stars(order.rating)} <span class="muted small">${order.rating}/5</span></p><p class="small">${escapeHtml(order.feedback||"No written comment.")}</p>`:""}
+      <div class="row" style="justify-content:flex-start;margin-top:10px">
+        ${order.status==="Ordered"?`
+          <button onclick="makeDelivery('${order.id}')">Make Delivery</button>
+          <button class="danger" onclick="cancelOrder('${order.id}')">Cancel order</button>
+        `:""}
+        ${order.status==="Delivered"&&order.rating===null?`
+          <button class="secondary" onclick="makeDelivery('${order.id}')">Rate delivery</button>
+        `:""}
+      </div>
+    </div>
+  `).join("");
 }
 
 function makeContact(id){
- const s=sellers.find(x=>x.id===id);
- openModal("Contact "+s.name,`
- <p>Choose how you would like to contact this sample seller.</p>
- <div class="notice">This seller profile is simulated and has no verified contact details yet.</div>
- <button class="secondary" onclick="alert('Add a real seller phone number before enabling WhatsApp contact.')">WhatsApp contact (setup required)</button>`);
+  const seller=sellers.find(item=>item.id===id);
+  openModal("Contact "+seller.name,`
+    <p>Choose how you would like to contact this seller.</p>
+    <div class="notice">This is a sample seller profile. Verified contact details have not yet been added.</div>
+  `);
 }
+window.makeContact=makeContact;
 
+/* MODALS */
 function openModal(title,body){
- document.getElementById("modalTitle").textContent=title;
- document.getElementById("modalBody").innerHTML=body;
- document.getElementById("modal").classList.add("show");
+  document.getElementById("modalTitle").textContent=title;
+  document.getElementById("modalBody").innerHTML=body;
+  document.getElementById("modal").classList.add("show");
 }
-
 function closeModal(){
- document.getElementById("modal").classList.remove("show");
+  document.getElementById("modal").classList.remove("show");
 }
+window.closeModal=closeModal;
 
-function escapeHtml(s){
- return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-}
-
-const memes=[
-["📦","Me: I hope my delivery comes early.<br>Also me: checking the tracking every 14 seconds."],
-["🚚","Delivery rider: I'm nearby.<br>Me: Defines nearby."],
-["⭐","Seller after one five-star review: We are basically family now."],
-["😅","Order placed.<br>Bank balance: We need to talk."],
-["📱","Customer: Any update?<br>Seller: Your patience is being delivered separately."],
-["😂","When the package arrives and it is exactly what you ordered. A rare victory."]
-];
-
-document.getElementById("memeGrid").innerHTML=memes.map(m=>`
- <div class="card"><div class="meme">${m[0]}</div><p>${m[1]}</p><span class="pill">NGWAI meme</span></div>
-`).join("");
-
-const streakKey="ngwai90streak";
-
-function getStreak(){
- return JSON.parse(localStorage.getItem(streakKey)||'{"days":[]}');
-}
-
-function renderStreak(){
- const data=getStreak(),days=data.days||[];
- const today=new Date().toLocaleDateString("en-CA");
- const done=days.some(d=>d.date===today);
- let current=0;
-
- if(days.length){
-  const sorted=[...days].sort((a,b)=>b.date.localeCompare(a.date));
-  let date=new Date(sorted[0].date+"T12:00:00");
-  if(sorted[0].date===today||sorted[0].date===new Date(Date.now()-86400000).toLocaleDateString("en-CA")){
-   for(const d of sorted){
-    if(d.date===date.toLocaleDateString("en-CA")){
-     current++;
-     date.setDate(date.getDate()-1);
-    }else break;
-   }
-  }
- }
-
- document.getElementById("streakCount").textContent=current;
- document.getElementById("daysDone").textContent=days.length;
- document.getElementById("daysLeft").textContent=Math.max(0,90-days.length);
- document.getElementById("streakBar").style.width=Math.min(100,days.length/90*100)+"%";
- document.getElementById("streakMessage").textContent=done?"Today's progress is already marked. Come back tomorrow.":`You have ${90-days.length} days left in your challenge.`;
- document.getElementById("checkinBtn").disabled=done||days.length>=90;
- document.getElementById("checkinBtn").textContent=done?"Today's progress marked":"Mark today's progress";
- document.getElementById("streakHistory").innerHTML=
- days.slice().reverse().map(d=>`
- <div class="order"><b>${d.date}</b><p class="small muted">${escapeHtml(d.note||"Progress check-in")}</p></div>
- `).join("")||'<p class="muted small">Your check-ins will appear here.</p>';
-}
-
-function checkIn(){
- const note=document.getElementById("streakNote").value.trim();
- if(!note)return alert("Write one short note about today's website progress.");
- const data=getStreak();
- const today=new Date().toLocaleDateString("en-CA");
- if(data.days.some(d=>d.date===today))return renderStreak();
- data.days.push({date:today,note});
- localStorage.setItem(streakKey,JSON.stringify(data));
- document.getElementById("streakNote").value="";
- renderStreak();
-}
-
+/* INITIAL PAGE RENDER */
 renderSellers();
 renderOrders();
-renderStreak();
 </script>
 </body>
 </html>
