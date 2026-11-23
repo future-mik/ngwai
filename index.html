@@ -219,15 +219,17 @@ signInWithPhoneNumber,signOut,onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 import {getFirestore,doc,setDoc,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
-/* REPLACE THESE PLACEHOLDERS WITH YOUR NGWAI FIREBASE WEB CONFIG */
-const CONFIG={
- apiKey:"PASTE_NGWAI_FIREBASE_API_KEY",
- authDomain:"PASTE_NGWAI_PROJECT_ID.firebaseapp.com",
- projectId:"PASTE_NGWAI_PROJECT_ID",
- storageBucket:"PASTE_NGWAI_PROJECT_ID.appspot.com",
- messagingSenderId:"PASTE_MESSAGING_SENDER_ID",
- appId:"PASTE_NGWAI_APP_ID"
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC7n4hNexB2p9-KPKFBw5q_0tNkG4MmA08",
+  authDomain: "ngwai-49c44.firebaseapp.com",
+  projectId: "ngwai-49c44",
+  storageBucket: "ngwai-49c44.firebasestorage.app",
+  messagingSenderId: "710589884461",
+  appId: "1:710589884461:web:cd679cacb3f04de55ff0a4",
+  measurementId: "G-FSVDXB67HE"
 };
+
 
 const configured=Object.values(CONFIG).every(v=>v&&!v.includes("PASTE_"));
 let auth,db,confirmation,recaptcha;
