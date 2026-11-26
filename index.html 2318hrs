@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#171717">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080d17">
+<title>NGWAI 🚭Orders, Delivery & Customer Satisfaction</title>
+<style>
+:root{--bg:#080d17;--panel:#121d2e;--line:#2a3a52;--text:#edf3fb;--muted:#a9b8ca;--accent:#f4b942;--green:#36c995;--red:#ff7777}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,sans-serif;position:relative;min-height:100vh}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;background:url("ngwai-logo.jpg") center center/contain no-repeat;opacity:.24}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;border:0;border-radius:12px;padding:11px 15px;font-weight:700;background:var(--accent);color:#172033}
+button.secondary{background:#263750;color:white;border:1px solid var(--line)}
+button.ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
+button.danger{background:#702f3a;color:white;border:1px solid #a94d5c}
+button:disabled{opacity:.45;cursor:not-allowed}
+input,select,textarea{font:inherit}
+.wrap{max-width:1180px;margin:auto;padding:16px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 0 18px}
+.brand-wrap{display:flex;align-items:center;gap:11px}
+.brand{font-size:28px;font-weight:950;letter-spacing:3px}
+.brand small{display:block;font-size:10px;letter-spacing:2px;color:var(--muted)}
+.brandmark{width:55px;height:55px;object-fit:contain;border-radius:12px}
+.menu-toggle{width:48px;height:44px;display:grid;place-content:center;gap:5px;background:#17263a;border:1px solid var(--line)}
+.menu-toggle span{width:23px;height:2px;background:white;display:block;border-radius:4px}
+.drawer-shade{position:fixed;inset:0;background:rgba(0,0,0,.38);z-index:90;display:none}
+.drawer-shade.open{display:block}
+.drawer{position:fixed;z-index:91;left:0;top:0;bottom:0;width:min(300px,82vw);padding:20px 16px;background:#101b2b;border-right:1px solid var(--line);transform:translateX(-105%);transition:transform .24s ease;overflow:auto;box-shadow:12px 0 35px #0005}
+.drawer.open{transform:translateX(0)}
+.drawer-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.drawer-brand{font-weight:950;letter-spacing:3px;font-size:22px}
+.drawer-nav{display:grid;gap:8px}
+.drawer-nav button{width:100%;text-align:left;background:transparent;color:var(--text);border:1px solid transparent;padding:13px 14px}
+.drawer-nav button.active,.drawer-nav button:hover{background:#23344b;border-color:#40516a;color:var(--accent)}
+.hero{background:linear-gradient(130deg,rgba(27,45,70,.93),rgba(23,34,54,.92) 60%,rgba(59,48,32,.91));border:1px solid var(--line);border-radius:22px;padding:28px;margin-bottom:18px}
+.hero h1{font-size:clamp(30px,6vw,54px);line-height:1.05}
+.hero p{max-width:650px;color:#d2deed}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:14px}
+.card{background:rgba(18,29,46,.86);border:1px solid var(--line);border-radius:17px;padding:17px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.muted{color:var(--muted)}.small{font-size:12px}
+.pill{display:inline-block;padding:4px 9px;border-radius:99px;background:#25364d;color:#cbd8e8;font-size:11px}
+.stars{color:var(--accent);letter-spacing:2px}
+.avatar{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;background:#263a56;font-size:24px}
+.seller-head{display:flex;gap:12px;align-items:center}
+.seller-card h3{margin:0}
+.seller-card p{margin:10px 0}
+.seller-card .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}
+.seller-card button{flex:1}
+.section{display:none}.section.active{display:block}
+.field{display:grid;gap:6px;margin:10px 0}
+.field input,.field select,.field textarea{width:100%;background:#0d1727;border:1px solid var(--line);border-radius:10px;padding:12px;color:white}
+.notice{padding:12px;border-radius:12px;background:rgba(36,54,76,.88);color:#dce7f5;margin:12px 0}
+.good{color:var(--green)}.bad{color:var(--red)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:15px 0}
+.stat{background:rgba(16,26,42,.9);padding:13px;border-radius:13px}
+.stat strong{display:block;font-size:24px}
+.list{display:grid;gap:10px}
+.order{border:1px solid var(--line);border-radius:13px;padding:13px;background:rgba(16,26,42,.9)}
+.footer{text-align:center;color:var(--muted);font-size:12px;padding:30px 0}
+.hide{display:none!important}
+.age-gate{position:fixed;inset:0;background:#fff url("ngwai2-logo.jpg") center center/contain no-repeat;z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;color:#172033}
+.age-card{width:min(440px,100%);background:rgba(255,255,255,.96);border:1px solid #d5dbe5;border-radius:20px;padding:27px;text-align:center;box-shadow:0 12px 45px rgba(20,35,55,.18)}
+.age-logo{width:92px;height:92px;object-fit:contain;border-radius:16px}
+.age-card p{color:#3c4a5d}
+.age-actions{display:flex;gap:12px;margin-top:22px}
+.age-actions button{flex:1;padding:14px}
+.age-no{background:#28364a!important;color:white!important;border:1px solid #64748b!important}
+.modal{position:fixed;inset:0;background:transparent;display:none;align-items:center;justify-content:center;padding:16px;z-index:120}
+.modal.show{display:flex}
+.modalbox{width:min(560px,100%);max-height:90vh;overflow:auto;background:rgba(18,29,46,.97);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 15px 45px #0006}
+.feed{max-width:680px;margin:auto;display:grid;gap:18px}
+.feed-post{overflow:hidden;padding:0}
+.feed-post-head{padding:13px 15px}
+.feed-actions{display:flex;gap:8px;flex-wrap:wrap;padding:12px 15px}
+.feed-caption{padding:0 15px 12px;white-space:pre-wrap;overflow-wrap:anywhere}
+.feed-comments{padding:0 15px 14px}
+.feed-comments p{margin:6px 0;font-size:13px}
+.feed-comment-form{display:flex;gap:7px;margin-top:10px}
+.feed-comment-form input{flex:1;min-width:0;background:#0d1727;color:white;border:1px solid var(--line);border-radius:9px;padding:10px}
+.composer{padding:16px;border:1px dashed #657a96;border-radius:15px;margin:16px 0;background:rgba(18,29,46,.86)}
+.composer textarea{width:100%;min-height:95px;background:#0d1727;color:white;border:1px solid var(--line);border-radius:10px;padding:12px}
+.story-strip{display:flex;gap:10px;overflow-x:auto;padding:5px 2px 15px}
+.story-chip{min-width:145px;max-width:180px;min-height:105px;border:1px solid #657a96;border-radius:15px;padding:12px;background:linear-gradient(145deg,#263c59,#172437);text-align:left;color:white;white-space:normal}
+.story-chip strong{display:block;margin-bottom:5px;color:var(--accent)}
+.story-chip .story-preview{font-size:12px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.post-tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.post-tools select{max-width:150px;background:#0d1727;color:white;border:1px solid var(--line);border-radius:9px;padding:8px}
+.floating-plus{position:fixed;right:20px;bottom:22px;width:58px;height:58px;border-radius:50%;font-size:30px;padding:0;z-index:20;box-shadow:0 5px 22px #0008}
+@media(max-width:600px){.wrap{padding:13px}.hero{padding:20px}.stats{grid-template-columns:1fr 1fr 1fr}.brand{font-size:24px}.age-card{padding:22px}.modalbox{padding:16px}}
+
+/* NGWAI Moments terminal mode */
+body.moments-mode{background:#030806;color:#b8f5c8;overflow-x:hidden}
+body.moments-mode:before{z-index:0;opacity:.10;background:url("ngwai-logo.jpg") center center/min(72vw,680px) auto no-repeat}
+body.moments-mode .wrap{position:relative;z-index:1;max-width:none;width:100%;padding:0;min-height:100vh}
+body.moments-mode .top,body.moments-mode .footer,body.moments-mode .drawer,body.moments-mode .drawer-shade,body.moments-mode #floatingPlus{display:none!important}
+body.moments-mode #feed{display:block!important;min-height:100vh}
+.terminal-shell{min-height:100vh;background:rgba(1,8,5,.92);color:#b8f5c8;font:14px/1.55 "Consolas","Courier New",monospace;display:flex;flex-direction:column;border:1px solid #174b2a}
+.terminal-topbar,.terminal-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 18px;background:#06140b;border-bottom:1px solid #174b2a;flex-wrap:wrap}
+.terminal-brand{font-weight:900;letter-spacing:2px}.terminal-led{display:inline-block;width:9px;height:9px;border-radius:50%;background:#39ef72;box-shadow:0 0 10px #39ef72;margin-right:8px}
+.terminal-version,.terminal-muted,.terminal-hint{color:#6eaa7c;font-size:12px}.terminal-top-actions{display:flex;gap:12px;align-items:center}.terminal-identity{color:#8eeaa3}
+.terminal-button{background:#0b2413;color:#b8f5c8;border:1px solid #287641;border-radius:4px;padding:8px 12px;font:inherit;font-weight:bold}
+.terminal-button:hover{background:#12371d}.terminal-button.primary{background:#10351b;color:#caffd5}
+.terminal-body{display:grid;grid-template-columns:220px minmax(0,1fr);flex:1;min-height:0}
+.terminal-sidebar{padding:18px 12px;border-right:1px solid #174b2a;background:rgba(2,13,7,.85)}
+.terminal-sidebar-title,.terminal-side-note{font-size:11px;letter-spacing:2px;color:#5f9c6d;margin:0 8px 14px}
+.terminal-nav{display:block;width:100%;text-align:left;margin:5px 0;padding:10px;background:transparent;color:#9bcba5;border:1px solid transparent;border-radius:3px;font:inherit;font-size:12px}
+.terminal-nav.active,.terminal-nav:hover{border-color:#287641;background:#0b2413;color:#baffc7}
+.terminal-side-note{margin-top:35px;line-height:2}.terminal-side-note span{font-size:9px;letter-spacing:1px}
+.terminal-main{padding:22px;min-width:0;max-width:1100px;width:100%;margin:0 auto}
+.terminal-prompt{color:#62e987;font-weight:bold}.terminal-prompt span{color:#d1ffda}
+.terminal-greeting{border-bottom:1px dashed #205b31;padding-bottom:14px;margin-bottom:18px}.terminal-greeting p{color:#7db68a;margin:6px 0}
+.terminal-section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid #174b2a;margin:15px 0;padding-bottom:8px}
+.terminal-section-head h2{font-size:16px;letter-spacing:2px;margin:0;color:#caffd5}.terminal-live{font-size:10px;color:#54d879;letter-spacing:1px}
+.moment-pane{display:none}.moment-pane.active{display:block}
+.terminal-status{border:1px solid #174b2a;background:#06140b;padding:10px;margin:12px 0;color:#9bcba5;font-size:12px}
+.terminal-composer{background:rgba(4,18,9,.9);border:1px dashed #287641;border-radius:3px}
+.terminal-composer textarea,.terminal-composer select,.terminal-inline input{background:#020906;color:#caffd5;border:1px solid #205b31;border-radius:3px;padding:11px;width:100%;font:inherit}
+.terminal-composer textarea{min-height:150px;margin:8px 0}.terminal-composer label,.terminal-message-search label{color:#77bd88;font-size:11px;letter-spacing:1px}
+.terminal-composer .field{margin:8px 0}.terminal-composer .field select{width:100%}
+.terminal-inline{display:flex;gap:8px;align-items:center}.terminal-inline input{min-width:0;flex:1}
+.terminal-message-layout{display:grid;grid-template-columns:minmax(210px,.8fr) minmax(0,1.5fr);gap:14px}
+.terminal-message-search,.terminal-chat,.terminal-identity-card{background:rgba(4,18,9,.9);border:1px solid #174b2a;padding:14px;min-width:0}
+.terminal-message-search h3{font-size:12px;letter-spacing:2px;color:#77bd88;margin-top:22px}.terminal-list{display:grid;gap:7px}
+.terminal-list button{text-align:left;background:#07170c;color:#b8f5c8;border:1px solid #174b2a;border-radius:3px;padding:9px;font:inherit}
+.terminal-chat{display:flex;flex-direction:column;min-height:430px}.terminal-chat-head{padding-bottom:10px;border-bottom:1px solid #174b2a;color:#8eeaa3}
+.terminal-message-list{flex:1;overflow:auto;max-height:440px;padding:10px 0}.terminal-message{padding:9px;margin:7px 0;background:#07170c;border-left:2px solid #287641;overflow-wrap:anywhere}.terminal-message.mine{border-left-color:#6be88b}
+.terminal-message small{display:block;color:#639a70}.terminal-identity-card strong{display:block;font-size:28px;letter-spacing:5px;color:#caffd5;margin-bottom:18px}
+.feed{max-width:900px}.feed-post{background:rgba(4,18,9,.94);border:1px solid #174b2a;border-radius:3px;color:#caffd5}
+.feed-post-head{padding:13px 15px}.feed-caption{padding:0 15px 14px;white-space:pre-wrap;overflow-wrap:anywhere}
+.feed-actions{padding:10px 15px;border-top:1px solid #10351b}.feed-actions button,.feed-comment-form button{background:#0b2413;color:#b8f5c8;border:1px solid #287641;border-radius:3px;font:inherit;padding:7px 10px}
+.feed-comments{padding:0 15px 14px}.feed-comments p{font-size:12px;color:#9bcba5}.feed-comment-form{display:flex;gap:7px}
+.feed-comment-form input{min-width:0;flex:1;background:#020906;color:#caffd5;border:1px solid #205b31;padding:9px;border-radius:3px}
+.story-strip{display:flex;gap:8px;overflow:auto}.story-chip{background:#07170c;border:1px solid #205b31;color:#b8f5c8;border-radius:3px}.story-chip strong{color:#70e88e}
+.verified-tick{display:inline-grid;place-items:center;width:14px;height:14px;border-radius:50%;background:#168c45;color:#fff;font:10px Arial;margin-left:5px;vertical-align:middle}
+.terminal-footer{border-top:1px solid #174b2a;border-bottom:0;color:#5f9c6d;font-size:10px;letter-spacing:1px}.terminal-footer b{color:#5df083}
+@media(max-width:700px){.terminal-body{grid-template-columns:1fr}.terminal-sidebar{display:flex;gap:4px;overflow:auto;border-right:0;border-bottom:1px solid #174b2a;padding:8px}.terminal-sidebar-title,.terminal-side-note{display:none}.terminal-nav{white-space:nowrap;width:auto;flex:0 0 auto;font-size:10px;padding:8px}.terminal-main{padding:13px}.terminal-message-layout{grid-template-columns:1fr}.terminal-chat{min-height:350px}.terminal-version{display:none}}
+
+</style>
+</head>
+<body>
+
+<div class="age-gate" id="ageGate" role="dialog" aria-modal="true">
+  <div class="age-card" id="ageCard">
+    <img src="ngwai2-logo.jpg" alt="NGWAI logo" class="age-logo" onerror="this.style.display='none'">
+    <h1>Before you enter NGWAI</h1>
+    <p>This website is intended for adults aged 18 years and above. Are you 18 or older?</p>
+    <div class="age-actions">
+      <button class="age-no" onclick="denyAge()">NO</button>
+      <button onclick="acceptAge()">YES</button>
+    </div>
+  </div>
+</div>
+
+<div class="drawer-shade" id="drawerShade" onclick="toggleMenu(false)"></div>
+<aside class="drawer" id="sideDrawer" aria-hidden="true">
+  <div class="drawer-head">
+    <div class="drawer-brand">NGWAI</div>
+    <button class="ghost" onclick="toggleMenu(false)" aria-label="Close menu">✕</button>
+  </div>
+  <nav class="drawer-nav" id="drawerNav">
+    <button class="active" data-tab="home" onclick="showTab('home')">⌂ &nbsp; Home</button>
+    <button data-tab="sellers" onclick="showTab('sellers')">♙ &nbsp; Sellers</button>
+    <button data-tab="orders" onclick="showTab('orders')">▤ &nbsp; Orders</button>
+    <button data-tab="feed" onclick="showTab('feed')">◉ &nbsp; NGWAI Moments</button>
+    <button data-tab="settings" onclick="showTab('settings')">⚙ &nbsp; Settings</button>
+    <button data-tab="account" onclick="showTab('account')">⇥ &nbsp; Sign in / Account</button>
+  </nav>
+</aside>
+
+<div class="wrap">
+<header class="top">
+  <div class="brand-wrap">
+    <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+    <img class="brandmark" src="ngwai-logo.jpg" alt="NGWAI logo">
+    <div class="brand">NGWAI<small>ORDERS · DELIVERY · COMMUNITY</small></div>
+  </div>
+  <div class="row">
+    <span id="userLabel" class="muted small">Not signed in</span>
+    <button id="logoutBtn" class="secondary hide" onclick="logout()">Sign out</button>
+  </div>
+</header>
+
+<section id="home" class="section active">
+  <div class="hero">
+    <span class="pill">WELCOME TO NGWAI</span>
+    <h1>Order with confidence.<br>Connect with community.</h1>
+    <p>Discover sellers, place orders, follow delivery progress and share text-only posts through NGWAI Moments.</p>
+    <div class="row" style="justify-content:flex-start">
+      <button onclick="showTab('sellers')">Explore sellers</button>
+      <button class="secondary" onclick="showTab('feed')">Open Moments</button>
+    </div>
+  </div>
+  <div class="stats">
+    <div class="stat"><strong>27</strong><span class="muted small">Sample sellers</span></div>
+    <div class="stat"><strong>200</strong><span class="muted small">Sample clients</span></div>
+    <div class="stat"><strong>∞</strong><span class="muted small">Community moments</span></div>
+  </div>
+  <div class="grid">
+    <div class="card"><h3>Discover sellers</h3><p class="muted">Browse sample profiles and new sellers who apply to join NGWAI.</p><button class="secondary" onclick="showTab('sellers')">View sellers</button></div>
+    <div class="card"><h3>NGWAI Moments</h3><p class="muted">Publish text-only moments and conversations with a permanent NGWAINAME.</p><button class="secondary" onclick="showTab('feed')">Explore Moments</button></div>
+    <div class="card"><h3>Your orders</h3><p class="muted">Create an order, review its status or cancel it if you change your mind.</p><button class="secondary" onclick="showTab('orders')">Open orders</button></div>
+  </div>
+  <div class="notice">The 27 seller profiles and sample feedback are illustrative. Orders in this version are stored in this browser; real payment and courier dispatch are not connected.</div>
+</section>
+
+<section id="sellers" class="section">
+  <div class="row">
+    <div><h2>Discover sellers</h2><p class="muted">Browse sellers or apply to become one.</p></div>
+    <input id="sellerSearch" placeholder="Search sellers..." style="max-width:210px;background:#0d1727;border:1px solid var(--line);padding:10px;border-radius:10px;color:white">
+  </div>
+  <div class="row" style="justify-content:flex-start;margin:8px 0 16px">
+    <button onclick="openSellerApplication()">I am a seller</button>
+  </div>
+  <h3>NGWAI sellers</h3>
+  <div id="sellerGrid" class="grid"></div>
+  <h3 style="margin-top:25px">New seller applications</h3>
+  <p class="muted small">Seller applications submitted by signed-in NGWAI members appear here.</p>
+  <div id="communitySellerGrid" class="grid"><div class="card muted">Loading seller applications...</div></div>
+</section><section id="orders" class="section">
+  <div class="row">
+    <div><h2>Your orders</h2><p class="muted">Orders placed in this browser.</p></div>
+    <button onclick="openOrderForm()">➕</button>
+  </div>
+  <div id="orderList" class="list"><div class="card muted">No orders yet. Tap ➕ to place an order.</div></div>
+</section>
+
+<section id="feed" class="section">
+  <div class="terminal-shell">
+    <header class="terminal-topbar">
+      <div class="terminal-brand"><span class="terminal-led"></span> NGWAI MOMENTS <span class="terminal-version">[ COMMUNITY TERMINAL ]</span></div>
+      <div class="terminal-top-actions"><span id="terminalIdentity" class="terminal-identity">GUEST</span><button class="terminal-button" onclick="exitMoments()">← EXIT MOMENTS</button></div>
+    </header>
+    <div class="terminal-body">
+      <aside class="terminal-sidebar">
+        <div class="terminal-sidebar-title">DIRECTORIES</div>
+        <button class="terminal-nav active" onclick="showMomentPane('timeline',this)">01 / PUBLIC FEED</button>
+        <button class="terminal-nav" onclick="showMomentPane('compose',this)">02 / PUBLISH</button>
+        <button class="terminal-nav" onclick="showMomentPane('messages',this)">03 / PRIVATE MESSAGES</button>
+        <button class="terminal-nav" onclick="showMomentPane('identity',this)">04 / IDENTITY</button>
+        <div class="terminal-side-note">NGWAI NETWORK<br><span>TEXT ONLY · FIRESTORE LIVE</span></div>
+      </aside>
+      <main class="terminal-main">
+        <div class="terminal-greeting"><div class="terminal-prompt">NGWAI@MOMENTS:~$ <span>connect --community</span></div><p>Welcome to the NGWAI text network. Your public identity is your NGWAINAME.</p></div>
+        <div id="momentPane-timeline" class="moment-pane active">
+          <div class="terminal-section-head"><h2>PUBLIC MOMENTS</h2><span class="terminal-live">● LIVE FEED</span></div>
+          <div id="storyStrip" class="story-strip"></div><div id="feedStatus" class="terminal-status">Sign in to publish. Public text moments appear here.</div><div id="feedPosts" class="feed"></div>
+        </div>
+        <div id="momentPane-compose" class="moment-pane">
+          <div class="terminal-section-head"><h2>NEW TRANSMISSION</h2><span class="terminal-live">TEXT CHANNEL</span></div>
+          <div class="composer terminal-composer" id="composer">
+            <label for="postText">MESSAGE CONTENT</label><textarea id="postText" maxlength="5000" placeholder="Type your moment..."></textarea>
+            <div class="grid">
+              <div class="field"><label for="postKind">FORMAT</label><select id="postKind"><option value="moment">Moment</option><option value="story">Story</option></select></div>
+              <div class="field"><label for="postPrivacy">AUDIENCE</label><select id="postPrivacy"><option value="public">Public</option><option value="friends">Friends I choose</option><option value="private">Only me</option></select></div>
+            </div>
+            <button onclick="publishPost()" id="publishBtn" class="terminal-button primary">[ TRANSMIT ]</button><p class="terminal-hint">No images. No video. Text only.</p>
+          </div>
+        </div>
+        <div id="momentPane-messages" class="moment-pane">
+          <div class="terminal-section-head"><h2>PRIVATE MESSAGES</h2><span class="terminal-live">FIRESTORE TEXT CHANNEL</span></div>
+          <div class="terminal-message-layout">
+            <div class="terminal-message-search"><label for="memberSearch">FIND MEMBER BY NGWAINAME</label><div class="terminal-inline"><input id="memberSearch" maxlength="6" placeholder="ABC123"><button class="terminal-button primary" onclick="findMember()">SEARCH</button></div><div id="memberSearchResult" class="terminal-status">Enter a six-character NGWAINAME.</div><h3>INBOX</h3><div id="conversationList" class="terminal-list">Sign in to view messages.</div></div>
+            <div class="terminal-chat"><div id="chatHeading" class="terminal-chat-head">SELECT A CONVERSATION</div><div id="messageList" class="terminal-message-list"><p class="terminal-muted">Private text messages will appear here.</p></div><div class="terminal-inline"><input id="messageText" maxlength="4000" placeholder="Write a private message..." disabled><button id="sendMessageBtn" class="terminal-button primary" onclick="sendMessage()" disabled>SEND</button></div></div>
+          </div>
+        </div>
+        <div id="momentPane-identity" class="moment-pane">
+          <div class="terminal-section-head"><h2>YOUR PUBLIC IDENTITY</h2><span class="terminal-live">PERMANENT HANDLE</span></div>
+          <div class="terminal-identity-card"><p class="terminal-muted">PUBLIC NAME · SIX CHARACTERS</p><strong id="myNgwaiName">------</strong><p class="terminal-muted">NGWAI ID · SIX DIGITS</p><strong id="myNgwaiId">------</strong><p>Your original account name, email and phone number are not shown in public Moments or private-message headers.</p></div>
+        </div>
+      </main>
+    </div>
+    <footer class="terminal-footer">NGWAI // COMMUNITY ACCESS NODE <span>STATUS: <b>ONLINE</b></span></footer>
+  </div>
+</section>
+
+<section id="settings" class="section">
+  <h2>Settings & privacy</h2>
+  <p class="muted">Control the default audience for your Moments and your interaction preference.</p>
+  <div class="grid">
+    <div class="card">
+      <h3>Moments privacy</h3>
+      <div class="field">
+        <label for="defaultPrivacy">Default audience for new posts</label>
+        <select id="defaultPrivacy"><option value="public">Public</option><option value="friends">Friends I choose</option><option value="private">Only me</option></select>
+      </div>
+      <p class="small muted">You can also change the audience separately on each post. “Only me” posts are visible only to you.</p>
+      <button onclick="saveSettings()">Save privacy settings</button>
+    </div>
+    <div class="card">
+      <h3>Choose your friends</h3>
+      <div class="field"><label for="friendEmails">Friend email addresses</label><textarea id="friendEmails" rows="4" placeholder="Add registered email addresses, separated by commas"></textarea></div>
+      <p class="small muted">Posts set to “Friends I choose” are shared only with the email addresses you list here and yourself. This is an email-based first version; friend requests and friend discovery can be added later.</p>
+      <button class="secondary" onclick="saveSettings()">Save friends list</button>
+    </div>
+    <div class="card">
+      <h3>Anonymous interaction preference</h3>
+      <label style="display:flex;gap:10px;align-items:center;margin:12px 0"><input id="anonymousInteractions" type="checkbox" style="width:20px;height:20px"> I prefer to interact anonymously</label>
+      <p class="small muted">Your preference will be saved to your account. The anonymous interaction feature itself is not active yet; we can add the interaction tool later.</p>
+      <button class="secondary" onclick="saveSettings()">Save interaction preference</button>
+    </div>
+  </div>
+  <div id="settingsStatus" class="notice">Sign in to manage your settings.</div>
+</section>
+
+<section id="account" class="section">
+  <h2>NGWAI account access</h2>
+  <p class="muted">Sign in using email, phone number or Google.</p>
+  <div class="grid">
+    <div class="card">
+      <h3>Email and password</h3>
+      <div class="field"><label>Email</label><input id="email" type="email" placeholder="you@example.com" autocomplete="email"></div>
+      <div class="field"><label>Password</label><input id="password" type="password" placeholder="At least 6 characters" autocomplete="current-password"></div>
+      <div class="row"><button onclick="emailAuth('signup')">Create account</button><button class="secondary" onclick="emailAuth('login')">Sign in</button></div>
+      <button class="ghost" style="margin-top:10px;width:100%" onclick="resetPassword()">Reset password</button>
+    </div>
+    <div class="card">
+      <h3>Phone number</h3><p class="small muted">Use international format, for example +2547XXXXXXXX.</p>
+      <div class="field"><label>Phone number</label><input id="phone" type="tel" placeholder="+2547XXXXXXXX" autocomplete="tel"></div>
+      <button onclick="sendCode()">Send verification code</button>
+      <div class="field"><label>SMS verification code</label><input id="otp" inputmode="numeric" placeholder="Enter SMS code"></div>
+      <button class="secondary" onclick="verifyCode()">Verify and sign in</button>
+      <div id="recaptcha-container"></div>
+    </div>
+    <div class="card">
+      <h3>Google</h3><p class="muted">Continue using your Google account.</p>
+      <button onclick="googleAuth()">Continue with Google</button>
+      <div class="notice small">Google sign-in requires the Google provider and your website domain to be enabled in Firebase.</div>
+    </div>
+  </div>
+  <div id="authStatus" class="notice">Connecting to Firebase...</div>
+</section>
+
+<div class="footer">NGWAI · Orders · Sellers · Moments</div>
+</div>
+
+<button class="floating-plus hide" id="floatingPlus" title="Create a moment" onclick="showTab('feed');focusComposer()">＋</button>
+
+<div class="modal" id="modal">
+  <div class="modalbox">
+    <div class="row"><h2 id="modalTitle">Details</h2><button class="ghost" onclick="closeModal()">✕</button></div>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import {
+  getAuth,setPersistence,browserLocalPersistence,createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,sendPasswordResetEmail,GoogleAuthProvider,
+  signInWithPopup,signInWithRedirect,getRedirectResult,RecaptchaVerifier,
+  signInWithPhoneNumber,signOut,onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import {
+  getFirestore,doc,getDoc,setDoc,updateDoc,serverTimestamp,collection,addDoc,
+  onSnapshot,query,orderBy,where,deleteDoc,runTransaction,getDocs,limit
+} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+const firebaseConfig={
+  apiKey:"AIzaSyC7n4hNexB2p9-KPKFBw5q_0tNkG4MmA08",
+  authDomain:"ngwai-49c44.firebaseapp.com",
+  projectId:"ngwai-49c44",
+  storageBucket:"ngwai-49c44.firebasestorage.app",
+  messagingSenderId:"710589884461",
+  appId:"1:710589884461:web:cd679cacb3f04de55ff0a4",
+  measurementId:"G-FSVDXB67HE"
+};
+
+let app=null,auth=null,db=null,currentUser=null;
+let confirmation=null,recaptcha=null,profileData={friendEmails:[],momentPrivacy:"public",anonymousInteractions:false};
+let feedUnsubs=[],sellerUnsub=null,commentUnsubs={};
+let feedCache=new Map(),communitySellers=[];
+let publicIdentityCache=new Map(),activeConversationId=null,activeConversationPeer=null;
+let messageUnsub=null,inboxUnsub=null,replyUnsubs={};
+
+const $=id=>document.getElementById(id);
+function status(id,message,bad=false){const el=$(id);if(el){el.textContent=message;el.className="notice "+(bad?"bad":"good");}}
+function friendly(error){
+  const messages={
+    "auth/operation-not-allowed":"This sign-in provider is not enabled in Firebase Authentication.",
+    "auth/unauthorized-domain":"This website domain is not authorized in Firebase Authentication settings.",
+    "auth/invalid-api-key":"The Firebase API key is invalid. Check the web app configuration.",
+    "auth/invalid-phone-number":"Enter a valid international phone number.",
+    "auth/captcha-check-failed":"reCAPTCHA verification failed. Check your authorized domains.",
+    "auth/too-many-requests":"Too many attempts. Wait before trying again.",
+    "auth/popup-blocked":"Google sign-in popup was blocked.",
+    "auth/network-request-failed":"Network request failed. Check your internet connection.",
+    "storage/unauthorized":"Firebase Storage rules do not allow this upload.",
+    "permission-denied":"Firestore rules denied this action. The required collection rules may not be published yet."
+  };
+  return (messages[error.code]||error.message||"Unknown error")+" ["+(error.code||"no error code")+"]";
+}
+function escapeHtml(value){return String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function formatDate(value){if(!value)return "Just now";const d=value.toDate?value.toDate():new Date(value);return d.toLocaleString();}
+function audienceLabel(value){return value==="private"?"Only me":value==="friends"?"Friends I choose":"Public";}
+function cleanNameSeed(value){const s=String(value||"MEMBER").normalize("NFKD").replace(/[^a-zA-Z0-9]/g,"").toUpperCase();return (s||"MEMBER").slice(0,6);}
+function makeNameSuggestions(displayName){
+  const seed=cleanNameSeed(displayName).padEnd(3,"X").slice(0,3),pool=new Set(),chars="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  while(pool.size<8){const candidate=seed+Array.from({length:3},()=>chars[Math.floor(Math.random()*chars.length)]).join("");pool.add(candidate);}
+  return [...pool];
+}
+async function allocateIdentity(user,chosenName=null){
+  const userRef=doc(db,"users",user.uid),existing=await getDoc(userRef),saved=existing.exists()?existing.data():{};
+  if(saved.ngwaiName&&saved.ngwaiId){await setDoc(doc(db,"publicProfiles",user.uid),{uid:user.uid,ngwaiName:saved.ngwaiName,ngwaiId:saved.ngwaiId,updatedAt:serverTimestamp()},{merge:true});return saved;}
+  const suggestions=makeNameSuggestions(user.displayName||user.email?.split("@")[0]||"MEMBER");
+  const requested=(chosenName||suggestions[0]).toUpperCase();
+  if(!/^[A-Z0-9]{6}$/.test(requested))throw new Error("NGWAINAME must contain exactly six letters or numbers.");
+  let allocated=null;
+  for(let attempt=0;attempt<40;attempt++){
+    const numeric=String(Math.floor(100000+Math.random()*900000));
+    try{
+      allocated=await runTransaction(db,async tx=>{
+        const u=await tx.get(userRef),current=u.exists()?u.data():{};
+        if(current.ngwaiName&&current.ngwaiId)return current;
+        const nameRef=doc(db,"ngwaiNames",requested),idRef=doc(db,"ngwaiIds",numeric);
+        const ns=await tx.get(nameRef),is=await tx.get(idRef);
+        if(ns.exists())throw new Error("NGWAINAME_TAKEN");
+        if(is.exists())throw new Error("NGWAI_ID_COLLISION");
+        const profile={ngwaiName:requested,ngwaiId:numeric,uid:user.uid,identityCreatedAt:serverTimestamp()};
+        tx.set(nameRef,{uid:user.uid,createdAt:serverTimestamp()});
+        tx.set(idRef,{uid:user.uid,createdAt:serverTimestamp()});
+        tx.set(userRef,{...profile,email:user.email||null,phoneNumber:user.phoneNumber||null,displayName:user.displayName||null,lastSignIn:serverTimestamp()},{merge:true});
+        tx.set(doc(db,"publicProfiles",user.uid),{uid:user.uid,ngwaiName:requested,ngwaiId:numeric,updatedAt:serverTimestamp()});
+        return profile;
+      });
+      break;
+    }catch(e){if(e.message==="NGWAI_ID_COLLISION")continue;throw e;}
+  }
+  if(!allocated)throw new Error("Could not allocate a unique NGWAI identity. Please try again.");
+  return allocated;
+}
+async function ensureIdentity(user){const s=await getDoc(doc(db,"users",user.uid)),d=s.exists()?s.data():{};if(d.ngwaiName&&d.ngwaiId)return allocateIdentity(user);return showIdentityChooser(user);}
+async function showIdentityChooser(user){
+  const suggestions=[],seen=new Set();
+  while(suggestions.length<8&&seen.size<100){
+    const batch=makeNameSuggestions(user.displayName||user.email?.split("@")[0]||"MEMBER");
+    for(const candidate of batch){
+      if(seen.has(candidate))continue;seen.add(candidate);
+      const taken=await getDoc(doc(db,"ngwaiNames",candidate));
+      if(!taken.exists())suggestions.push(candidate);
+      if(suggestions.length===8)break;
+    }
+  }
+  if(!suggestions.length)throw new Error("No suggested NGWAINAME is currently available. Please try again.");
+  return new Promise((resolve,reject)=>{
+    const options=suggestions.map(n=>`<button class="secondary" style="margin:5px" onclick="chooseIdentity('${n}')">${n}</button>`).join("");
+    window.pendingIdentity={user,resolve,reject,suggestions};
+    openModal("Choose your permanent NGWAINAME",`<p>These suggested names are currently available. Your public name must contain exactly six unique letters or numbers. Suggestions are inspired by your account name, but your original name stays private.</p><div>${options}</div><div class="field"><label>Or choose your own six-character name</label><input id="customNgwaiName" maxlength="6" autocomplete="off" placeholder="ABC123"></div><button onclick="submitCustomIdentity()">USE THIS NGWAINAME</button><p class="small muted">Your separate six-digit NGWAI ID is generated automatically.</p>`);
+  });
+}
+window.chooseIdentity=async name=>{const p=window.pendingIdentity;if(!p)return;try{const data=await allocateIdentity(p.user,name);window.pendingIdentity=null;closeModal();p.resolve(data);}catch(e){alert(e.message==="NGWAINAME_TAKEN"?"That NGWAINAME has just been taken. Choose another.":friendly(e));}};
+window.submitCustomIdentity=()=>{const v=$("customNgwaiName").value.trim().toUpperCase();if(!/^[A-Z0-9]{6}$/.test(v))return alert("Enter exactly six letters or numbers.");window.chooseIdentity(v);};
+function afterIdentityReady(data){profileData={...profileData,...data};$("myNgwaiName").textContent=data.ngwaiName;$("myNgwaiId").textContent=data.ngwaiId;$("terminalIdentity").textContent=data.ngwaiName;$("userLabel").textContent=data.ngwaiName;startFeed();startInbox();}
+async function publicNameFor(uid,fallback="NGWAI MEMBER"){
+  if(!uid)return fallback;if(publicIdentityCache.has(uid))return publicIdentityCache.get(uid);
+  try{const s=await getDoc(doc(db,"publicProfiles",uid));let n=s.exists()?s.data().ngwaiName:null;if(!n){const u=await getDoc(doc(db,"users",uid));n=u.exists()?u.data().ngwaiName:null;}n=n||fallback;publicIdentityCache.set(uid,n);return n;}catch(_){return fallback;}
+}
+function verifiedName(name){return `${escapeHtml(name||"NGWAI MEMBER")} <span class="verified-tick" title="NGWAI member identity">✓</span>`;}
+window.showMomentPane=(pane,button)=>{document.querySelectorAll(".moment-pane").forEach(x=>x.classList.toggle("active",x.id==="momentPane-"+pane));document.querySelectorAll(".terminal-nav").forEach(x=>x.classList.toggle("active",x===button));if(pane==="messages"&&currentUser)startInbox();if(pane==="timeline"&&typeof renderFeed==="function")renderFeed();};
+window.exitMoments=()=>{document.body.classList.remove("moments-mode");showTab("home");};
+try{
+  app=initializeApp(firebaseConfig);auth=getAuth(app);db=getFirestore(app);
+  await setPersistence(auth,browserLocalPersistence);
+  try{await getRedirectResult(auth);}catch(error){status("authStatus",friendly(error),true);}
+  onAuthStateChanged(auth,async user=>{
+    currentUser=user;window.currentUser=user;
+    $("logoutBtn").classList.toggle("hide",!user);$("floatingPlus").classList.toggle("hide",!user);
+    if(user){
+      try{
+        const profileSnap=await getDoc(doc(db,"users",user.uid));
+        profileData={...profileData,...(profileSnap.exists()?profileSnap.data():{})};
+        if(!Array.isArray(profileData.friendEmails))profileData.friendEmails=[];
+        const identity=await ensureIdentity(user);afterIdentityReady(identity);populateSettings();
+      }catch(error){status("authStatus","Account setup: "+friendly(error),true);}
+      status("authStatus","Signed in. Your NGWAI account is ready.");status("settingsStatus","Your settings are ready.");
+      status("feedStatus","You are signed in. Publish text-only moments.");startInbox();
+    }else{
+      profileData={friendEmails:[],momentPrivacy:"public",anonymousInteractions:false};
+      $("userLabel").textContent="Not signed in";$("terminalIdentity").textContent="GUEST";populateSettings();
+      status("feedStatus","Sign in to publish. Public text moments appear here.");status("settingsStatus","Sign in to manage your settings.",true);
+      if(inboxUnsub){inboxUnsub();inboxUnsub=null;}if(messageUnsub){messageUnsub();messageUnsub=null;}
+    }
+    startFeed();
+  });
+  startSellerApplications();
+  status("authStatus","Firebase initialized. Choose a sign-in method.");
+}catch(error){status("authStatus","Firebase initialization failed: "+friendly(error),true);}
+
+window.emailAuth=async mode=>{
+  const email=$("email").value.trim(),password=$("password").value;
+  if(!email||!password)return status("authStatus","Enter both email and password.",true);
+  try{
+    const result=mode==="signup"?await createUserWithEmailAndPassword(auth,email,password):await signInWithEmailAndPassword(auth,email,password);
+    status("authStatus",(mode==="signup"?"Account created":"Signed in")+" successfully.");
+  }catch(error){status("authStatus",friendly(error),true);}
+};
+window.resetPassword=async()=>{
+  const email=$("email").value.trim();if(!email)return status("authStatus","Enter your email address first.",true);
+  try{await sendPasswordResetEmail(auth,email);status("authStatus","Password reset email sent. Check your inbox.");}
+  catch(error){status("authStatus",friendly(error),true);}
+};
+window.googleAuth=async()=>{
+  const provider=new GoogleAuthProvider();
+  try{await signInWithPopup(auth,provider);status("authStatus","Google sign-in successful.");}
+  catch(error){
+    if(error.code==="auth/popup-blocked"||error.code==="auth/popup-closed-by-user"){
+      try{await signInWithRedirect(auth,new GoogleAuthProvider());}
+      catch(e){status("authStatus",friendly(e),true);}
+    }else status("authStatus",friendly(error),true);
+  }
+};
+window.sendCode=async()=>{
+  const phone=$("phone").value.trim();
+  if(!/^\+[1-9]\d{7,14}$/.test(phone))return status("authStatus","Use international phone format, e.g. +2547XXXXXXXX.",true);
+  try{
+    if(recaptcha)recaptcha.clear();
+    recaptcha=new RecaptchaVerifier(auth,"recaptcha-container",{size:"normal"});
+    confirmation=await signInWithPhoneNumber(auth,phone,recaptcha);
+    status("authStatus","SMS sent. Enter the verification code.");
+  }catch(error){status("authStatus",friendly(error),true);try{recaptcha?.clear();}catch(_){}recaptcha=null;}
+};
+window.verifyCode=async()=>{
+  if(!confirmation)return status("authStatus","Request an SMS code first.",true);
+  const code=$("otp").value.trim();if(!code)return status("authStatus","Enter the SMS verification code.",true);
+  try{const result=await confirmation.confirm(code);status("authStatus","Phone verified: "+result.user.phoneNumber);}
+  catch(error){status("authStatus",friendly(error),true);}
+};
+window.logout=async()=>{try{await signOut(auth);status("authStatus","Signed out.");}catch(error){status("authStatus",friendly(error),true);}};
+
+function populateSettings(){
+  $("defaultPrivacy").value=profileData.momentPrivacy||"public";
+  $("postPrivacy").value=profileData.momentPrivacy||"public";
+  $("friendEmails").value=(profileData.friendEmails||[]).join(", ");
+  $("anonymousInteractions").checked=!!profileData.anonymousInteractions;
+}
+window.saveSettings=async()=>{
+  if(!currentUser)return status("settingsStatus","Sign in before saving settings.",true);
+  const friendEmails=[...new Set($("friendEmails").value.split(/[,;\n]/).map(v=>v.trim().toLowerCase()).filter(v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)))];
+  profileData={...profileData,momentPrivacy:$("defaultPrivacy").value,friendEmails,anonymousInteractions:$("anonymousInteractions").checked};
+  try{
+    await setDoc(doc(db,"users",currentUser.uid),{
+      momentPrivacy:profileData.momentPrivacy,friendEmails:profileData.friendEmails,
+      anonymousInteractions:profileData.anonymousInteractions,settingsUpdatedAt:serverTimestamp()
+    },{merge:true});
+    populateSettings();status("settingsStatus","Your privacy and interaction preferences have been saved.");
+  }catch(error){status("settingsStatus","Could not save settings: "+friendly(error),true);}
+};
+
+/* Seller applications */
+function startSellerApplications(){
+  if(sellerUnsub)sellerUnsub();
+  sellerUnsub=onSnapshot(query(collection(db,"sellerApplications"),orderBy("createdAt","desc")),snap=>{
+    communitySellers=snap.docs.map(d=>({id:d.id,...d.data()}));renderCommunitySellers();
+  },error=>{$("communitySellerGrid").innerHTML='<div class="card muted">Seller applications are not available yet. Check Firestore rules.</div>';console.warn(error);});
+}
+window.openSellerApplication=()=>{
+  if(!currentUser){showTab("account");return alert("Please sign in before applying as a seller.");}
+  openModal("Apply to become a seller",`
+    <p class="muted small">Complete this profile. Once submitted, it will appear in the NGWAI sellers list.</p>
+    <div class="field"><label>Business / seller name</label><input id="applyName" maxlength="70" placeholder="Your shop or seller name"></div>
+    <div class="field"><label>Category</label><input id="applyCategory" maxlength="50" placeholder="e.g. Fashion, groceries, electronics"></div>
+    <div class="field"><label>What do you sell?</label><textarea id="applyDescription" rows="3" maxlength="500" placeholder="Briefly describe your products or services"></textarea></div>
+    <div class="field"><label>Contact phone or email</label><input id="applyContact" maxlength="100" placeholder="How customers can reach you"></div>
+    <button onclick="submitSellerApplication()" id="sellerApplyBtn">Submit seller application</button>
+  `);
+};
+window.submitSellerApplication=async()=>{
+  if(!currentUser)return alert("Please sign in first.");
+  const name=$("applyName").value.trim(),category=$("applyCategory").value.trim(),description=$("applyDescription").value.trim(),contact=$("applyContact").value.trim();
+  if(!name||!category||!description||!contact)return alert("Please complete all seller application fields.");
+  const btn=$("sellerApplyBtn");btn.disabled=true;btn.textContent="Submitting...";
+  try{
+    await addDoc(collection(db,"sellerApplications"),{
+      uid:currentUser.uid,displayName:profileData.ngwaiName||"NGWAI member",
+      name,category,description,contact,createdAt:serverTimestamp(),status:"listed"
+    });
+    closeModal();alert("Your seller profile has been submitted and added to the seller applications list.");
+  }catch(error){alert("Could not submit application: "+friendly(error));}
+  finally{if($("sellerApplyBtn")){ $("sellerApplyBtn").disabled=false;$("sellerApplyBtn").textContent="Submit seller application";}}
+};
+
+/* Sample seller profiles */
+const sellerNames=["Amani Fresh Mart","Kiboko Electronics","Maua Fashion House","Jirani Grocers","Poa Phone Hub","Urban Sole","Tamu Treats","Kijiji Homeware","Nia Beauty Store","Mtaa Books","Swift Gadgets","Zuri Collections","Mama Njeri Foods","Pixel Point","Baraka Boutique","Green Basket","Kicks Avenue","Soko Select","Mwangaza Decor","Daily Needs Kenya","The Craft Corner","Nova Accessories","Pishi Kitchen","Eastline Outfitters","Smart Choice Supplies","Milele Gifts","Cornerstone Traders"];
+const categories=["Groceries","Electronics","Fashion","Food & drinks","Phones","Shoes","Home & living","Beauty","Books","Accessories"];
+const sampleComments=[["Arrived earlier than expected. Seller communicated well.","Packaging was okay, but delivery took longer than promised.","Good product. I would order again."],["Seller was polite, but the item did not match the photo.","Fast delivery. No complaints this time.","I had to follow up twice before anyone responded."],["Affordable and exactly what I needed.","The delivery person was helpful; seller could improve updates.","Not a great experience. The order arrived late."]];
+const sampleRatings=[2.4,4.2,3.1,4.8,2.9,3.7,4.5,1.9,4.0,3.3,4.7,2.6,3.9,4.4,2.2,3.5,4.9,3.0,4.1,2.8,3.8,4.6,2.5,3.6,4.3,1.8,4.0];
+const sellers=sellerNames.map((name,i)=>({id:i+1,name,category:categories[i%categories.length],rating:sampleRatings[i],reviews:17+(i*13)%96,emoji:["🛍️","📱","👗","🥑","🎧","👟","🍰","🏠","💄"][i%9],comment:sampleComments[i%sampleComments.length][0]}));
+function stars(r){return "★".repeat(Math.round(r))+"☆".repeat(5-Math.round(r));}
+function renderSellers(filter=""){
+  $("sellerGrid").innerHTML=sellers.filter(s=>s.name.toLowerCase().includes(filter.toLowerCase())||s.category.toLowerCase().includes(filter.toLowerCase())).map(s=>`
+    <article class="card seller-card"><div class="seller-head"><div class="avatar">${s.emoji}</div><div><h3>${escapeHtml(s.name)}</h3><span class="pill">${escapeHtml(s.category)}</span></div></div>
+    <p><span class="stars">${stars(s.rating)}</span> <b>${s.rating.toFixed(1)}/5</b></p>
+    <p class="small muted">${s.reviews} sample feedback entries · illustrative profile</p><p class="small">“${escapeHtml(s.comment)}”</p>
+    <div class="actions"><button onclick="openOrderForm('${escapeHtml(s.name)}')">Order</button><button class="secondary" onclick="contactSeller('${escapeHtml(s.name)}')">Contact seller</button></div></article>`).join("");
+}
+async function renderCommunitySellers(){
+  const grid=$("communitySellerGrid");
+  if(!communitySellers.length){grid.innerHTML='<div class="card muted">No member seller applications yet. Be the first to apply.</div>';return;}
+  const cards=await Promise.all(communitySellers.map(async s=>{
+    const author=s.uid?await publicNameFor(s.uid,"NGWAI MEMBER"):"NGWAI MEMBER";
+    return `<article class="card seller-card"><div class="seller-head"><div class="avatar">🧑‍💼</div><div><h3>${escapeHtml(s.name||"NGWAI seller")}</h3><span class="pill">${escapeHtml(s.category||"Seller")}</span></div></div>
+    <p>${escapeHtml(s.description||"")}</p><p class="small muted">Applied by ${verifiedName(author)}</p>
+    <div class="actions"><button onclick="openOrderForm('${escapeHtml(s.name||"NGWAI seller")}')">Order</button><button class="secondary" onclick="contactSeller('${escapeHtml(s.name||"NGWAI seller")}','${escapeHtml(s.contact||"")}')">Contact seller</button></div></article>`;
+  }));
+  grid.innerHTML=cards.join("");
+}
+$("sellerSearch").addEventListener("input",e=>renderSellers(e.target.value));
+window.contactSeller=(name,contact="")=>openModal("Contact "+name,`<p>Seller contact details:</p><p><b>${escapeHtml(contact||"No contact details supplied.")}</b></p>`);/* Orders are currently stored in this browser. */
+let orders=[];try{orders=JSON.parse(localStorage.getItem("ngwaiOrders")||"[]");}catch(_){orders=[];}
+function saveOrders(){localStorage.setItem("ngwaiOrders",JSON.stringify(orders));renderOrders();}
+window.openOrderForm=(sellerName="")=>{
+  const options=[...sellers.map(s=>s.name),...communitySellers.map(s=>s.name||"NGWAI seller")];
+  const unique=[...new Set(options)];
+  openModal("Place an order",`
+    <div class="field"><label>Choose a seller</label><select id="orderSeller">${unique.map(n=>`<option ${n===sellerName?"selected":""} value="${escapeHtml(n)}">${escapeHtml(n)}</option>`).join("")}</select></div>
+    <div class="field"><label>What would you like to order?</label><textarea id="orderDetails" rows="3" placeholder="Describe the item, quantity or service"></textarea></div>
+    <div class="field"><label>Delivery location / instructions</label><input id="orderLocation" placeholder="Where should the order be delivered?"></div>
+    <button onclick="submitOrder()">Place order</button>
+    <p class="small muted">This records an order in this browser. Payment and live delivery dispatch are not connected yet.</p>
+  `);
+};
+window.submitOrder=()=>{
+  const seller=$("orderSeller").value,details=$("orderDetails").value.trim(),location=$("orderLocation").value.trim();
+  if(!details)return alert("Please describe what you want to order.");
+  const order={id:"NG"+Date.now().toString().slice(-8),seller,details,location,orderedAt:new Date().toISOString(),status:"Ordered",deliveredAt:null,rating:null,feedback:""};
+  orders.unshift(order);saveOrders();closeModal();showTab("orders");
+};
+window.cancelOrder=id=>{
+  const order=orders.find(o=>o.id===id);if(!order||order.status!=="Ordered")return;
+  if(!confirm("Are you sure you want to cancel this order?"))return;
+  order.status="Cancelled";order.cancelledAt=new Date().toISOString();saveOrders();
+};
+window.makeDelivery=id=>{
+  const order=orders.find(o=>o.id===id);if(!order||order.status!=="Ordered")return;
+  order.status="Delivered";order.deliveredAt=new Date().toISOString();saveOrders();
+  openModal("Delivery marked complete",`<p>Delivery for <b>${escapeHtml(order.seller)}</b> has been marked complete.</p><p>How satisfied were you?</p>
+    <div id="ratingPick" class="stars">${[1,2,3,4,5].map(n=>`<button class="ghost" onclick="chooseRating(${n})">${n}★</button>`).join("")}</div>
+    <textarea id="feedbackText" rows="3" placeholder="Share your feedback..." style="width:100%;margin:10px 0;background:#0d1727;color:white;border:1px solid var(--line);border-radius:10px;padding:10px"></textarea>
+    <button onclick="submitFeedback('${id}')">Submit feedback</button>`);
+};
+let chosenRating=0;
+window.chooseRating=n=>{chosenRating=n;document.querySelectorAll("#ratingPick button").forEach((b,i)=>b.classList.toggle("chosen",i<n));};
+window.submitFeedback=id=>{const o=orders.find(x=>x.id===id);if(!chosenRating)return alert("Choose a rating first.");o.rating=chosenRating;o.feedback=$("feedbackText").value.trim();saveOrders();chosenRating=0;closeModal();};
+function duration(ms){const mins=Math.max(0,Math.floor(ms/60000)),h=Math.floor(mins/60),m=mins%60;return h?`${h} hr ${m} min`:`${m} min`;}
+function renderOrders(){
+  const el=$("orderList");if(!orders.length){el.innerHTML='<div class="card muted">No orders yet. Tap ➕ to place an order.</div>';return;}
+  el.innerHTML=orders.map(o=>`<div class="order"><div class="row"><b>${escapeHtml(o.seller)}</b><span class="pill">${escapeHtml(o.status)}</span></div>
+    <p class="small muted">Reference ${escapeHtml(o.id)}</p><p>${escapeHtml(o.details||"")}</p><p class="small">Ordered: ${new Date(o.orderedAt).toLocaleString()}</p>
+    ${o.location?`<p class="small">Delivery: ${escapeHtml(o.location)}</p>`:""}
+    ${o.deliveredAt?`<p class="small">Delivered: ${new Date(o.deliveredAt).toLocaleString()} · Duration: ${duration(new Date(o.deliveredAt)-new Date(o.orderedAt))}</p>`:""}
+    ${o.cancelledAt?`<p class="small bad">Cancelled: ${new Date(o.cancelledAt).toLocaleString()}</p>`:""}
+    ${o.rating?`<p class="stars">${stars(o.rating)} <span class="small muted">${o.rating}/5</span></p><p class="small">${escapeHtml(o.feedback||"")}</p>`:""}
+    <div class="row" style="justify-content:flex-start;margin-top:10px">${o.status==="Ordered"?`<button onclick="makeDelivery('${o.id}')">Make Delivery</button><button class="danger" onclick="cancelOrder('${o.id}')">Cancel order</button>`:""}</div></div>`).join("");
+ }
+window.renderOrders=renderOrders;
+
+/* Text-only NGWAI Moments, Firestore engagement and direct messages. */
+function startFeed(){
+  feedUnsubs.forEach(fn=>{try{fn();}catch(_){}});feedUnsubs=[];feedCache.clear();if(!db)return;
+  const update=()=>renderFeed(),publicQ=query(collection(db,"posts"),where("visibility","==","public"));
+  feedUnsubs.push(onSnapshot(publicQ,s=>{s.docs.forEach(d=>feedCache.set(d.id,{id:d.id,...d.data()}));update();},e=>status("feedStatus","Public feed unavailable: "+friendly(e),true)));
+  if(currentUser){
+    const ownQ=query(collection(db,"posts"),where("uid","==",currentUser.uid));
+    feedUnsubs.push(onSnapshot(ownQ,s=>{s.docs.forEach(d=>feedCache.set(d.id,{id:d.id,...d.data()}));update();},e=>console.warn("Own posts:",e)));
+    if(currentUser.email){const friendQ=query(collection(db,"posts"),where("audienceEmails","array-contains",currentUser.email.toLowerCase()));feedUnsubs.push(onSnapshot(friendQ,s=>{s.docs.forEach(d=>feedCache.set(d.id,{id:d.id,...d.data()}));update();},e=>console.warn("Friends posts:",e)));}
+  }
+}
+function visiblePosts(){
+  const email=(currentUser?.email||"").toLowerCase();
+  return [...feedCache.values()].filter(p=>p.uid===currentUser?.uid||p.visibility==="public"||(p.visibility==="friends"&&email&&(p.audienceEmails||[]).includes(email))).sort((a,b)=>{
+    const ta=a.createdAt?.toMillis?a.createdAt.toMillis():new Date(a.createdAt||0).getTime(),tb=b.createdAt?.toMillis?b.createdAt.toMillis():new Date(b.createdAt||0).getTime();return tb-ta;
+  });
+}
+async function refreshPostCounters(id){
+  try{const [likes,views]=await Promise.all([getDocs(collection(db,"posts",id,"likes")),getDocs(collection(db,"posts",id,"views"))]);const lc=$("like-count-"+id),vc=$("view-count-"+id);if(lc)lc.textContent=likes.size;if(vc)vc.textContent=views.size;}catch(e){console.warn("Counters:",e);}
+}
+async function registerUniqueView(id){
+  if(!currentUser||!document.body.classList.contains("moments-mode")||!$("momentPane-timeline").classList.contains("active"))return;try{const ref=doc(db,"posts",id,"views",currentUser.uid);await runTransaction(db,async tx=>{const s=await tx.get(ref);if(!s.exists())tx.set(ref,{uid:currentUser.uid,createdAt:serverTimestamp()});});refreshPostCounters(id);}catch(e){console.warn("View count:",e);}
+}
+let legacyHydrationPending=new Set(),legacyHydrationDone=new Set(),counterUnsubs={};
+async function hydrateLegacyPostNames(posts){
+  for(const post of posts){
+    if(!post.ngwaiName&&post.uid&&!legacyHydrationPending.has(post.id)){
+      legacyHydrationPending.add(post.id);
+      const resolved=await publicNameFor(post.uid,"NGWAI MEMBER");
+      const current=feedCache.get(post.id);if(current){current.ngwaiName=resolved;feedCache.set(post.id,current);}
+      legacyHydrationDone.add(post.id);legacyHydrationPending.delete(post.id);
+    }
+  }
+  renderFeed();
+}
+function watchCounters(id){
+  if(counterUnsubs[id])return;
+  const stopLikes=onSnapshot(collection(db,"posts",id,"likes"),s=>{const el=$("like-count-"+id);if(el)el.textContent=s.size;});
+  const stopViews=onSnapshot(collection(db,"posts",id,"views"),s=>{const el=$("view-count-"+id);if(el)el.textContent=s.size;});
+  counterUnsubs[id]=()=>{stopLikes();stopViews();};
+}
+function renderFeed(){
+  const posts=visiblePosts();
+  const missing=posts.some(p=>!p.ngwaiName&&p.uid&&!legacyHydrationPending.has(p.id)&&!legacyHydrationDone.has(p.id));
+  if(missing){hydrateLegacyPostNames(posts); }
+  const stories=posts.filter(p=>p.kind==="story");
+  $("storyStrip").innerHTML=stories.length?stories.map(p=>`<button class="story-chip" onclick="openStory('${p.id}')"><strong>${verifiedName(p.ngwaiName||"NGWAI MEMBER")}</strong><span class="story-preview">${escapeHtml(p.text||"[Legacy media-only post]")}</span></button>`).join(""):'<div class="muted small">No stories yet. Share the first one.</div>';
+  if(!posts.length){$("feedPosts").innerHTML='<div class="terminal-status">No moments to show yet. Publish the first transmission.</div>';return;}
+  $("feedPosts").innerHTML=posts.map(p=>{
+    const owner=escapeHtml(p.ngwaiName||"NGWAI MEMBER"),text=escapeHtml(p.text||"[Legacy media-only post. Media is no longer displayed.]"),id=escapeHtml(p.id),own=p.uid===currentUser?.uid;
+    return `<article class="card feed-post" data-post="${id}"><div class="feed-post-head"><div class="row"><b>${verifiedName(owner)}</b><span class="pill">${p.kind==="story"?"STORY":"MOMENT"} · ${audienceLabel(p.visibility)}</span></div><div class="small muted">${formatDate(p.createdAt)}</div></div>
+      ${text?`<div class="feed-caption">${text}</div>`:""}
+      <div class="feed-actions"><button class="secondary" onclick="likePost('${id}')">♥ LIKE <span id="like-count-${id}">0</span></button><span class="small muted">◉ <span id="view-count-${id}">0</span> unique views</span></div>
+      <div class="feed-comments"><div id="comments-${id}" class="small muted">Loading comments...</div><div class="feed-comment-form"><input id="comment-${id}" maxlength="1500" placeholder="Write a comment..."><button onclick="addComment('${id}')">SEND</button></div></div>
+      ${own?`<div class="feed-actions post-tools"><label class="small muted">AUDIENCE</label><select onchange="changePrivacy('${id}',this.value)"><option value="public" ${p.visibility==="public"?"selected":""}>Public</option><option value="friends" ${p.visibility==="friends"?"selected":""}>Friends</option><option value="private" ${p.visibility==="private"?"selected":""}>Only me</option></select><button class="danger" onclick="deletePost('${id}')">DELETE</button></div>`:""}</article>`;
+  }).join("");
+  posts.forEach(p=>{watchComments(p.id);watchCounters(p.id);registerUniqueView(p.id);});
+}
+window.openStory=id=>{const p=feedCache.get(id);if(!p)return;openModal("NGWAI STORY",`<p class="muted small">${verifiedName(p.ngwaiName||"NGWAI MEMBER")} · ${formatDate(p.createdAt)}</p><p style="white-space:pre-wrap">${escapeHtml(p.text||"[Legacy media-only post. Media is no longer displayed.]")}</p>`);};
+window.focusComposer=()=>{if(!currentUser){showTab("account");return alert("Sign in before publishing.");}document.body.classList.add("moments-mode");showTab("feed");showMomentPane("compose",document.querySelectorAll(".terminal-nav")[1]);$("postText").focus();};
+window.publishPost=async()=>{
+  if(!currentUser)return status("feedStatus","Sign in before publishing.",true);
+  const text=$("postText").value.trim(),kind=$("postKind").value,visibility=$("postPrivacy").value;
+  if(!text)return status("feedStatus","Write a text message before publishing.",true);
+  if(visibility==="friends"&&!(profileData.friendEmails||[]).length)return status("feedStatus","Add friend email addresses in Settings before sharing with friends.",true);
+  const btn=$("publishBtn");btn.disabled=true;btn.textContent="[ TRANSMITTING... ]";
+  try{
+    await addDoc(collection(db,"posts"),{uid:currentUser.uid,ngwaiName:profileData.ngwaiName||await publicNameFor(currentUser.uid),text,kind,visibility,audienceEmails:visibility==="friends"?(profileData.friendEmails||[]):[],createdAt:serverTimestamp()});
+    $("postText").value="";status("feedStatus","Transmission published successfully.");showMomentPane("timeline",document.querySelector(".terminal-nav"));
+  }catch(error){status("feedStatus","Could not publish: "+friendly(error),true);}
+  finally{btn.disabled=false;btn.textContent="[ TRANSMIT ]";}
+};
+window.changePrivacy=async(id,visibility)=>{if(!currentUser)return;try{const update={visibility,audienceEmails:visibility==="friends"?(profileData.friendEmails||[]):[]};if(visibility==="friends"&&!update.audienceEmails.length)return alert("Add friends in Settings first.");await updateDoc(doc(db,"posts",id),update);const old=feedCache.get(id);if(old)feedCache.set(id,{...old,...update});renderFeed();}catch(error){alert("Could not change privacy: "+friendly(error));}};
+window.deletePost=async id=>{const post=feedCache.get(id);if(!post||post.uid!==currentUser?.uid)return;if(!confirm("Delete this text moment?"))return;try{await deleteDoc(doc(db,"posts",id));feedCache.delete(id);renderFeed();status("feedStatus","Your moment has been deleted.");}catch(error){status("feedStatus","Could not delete post: "+friendly(error),true);}};
+window.likePost=async id=>{if(!currentUser)return status("feedStatus","Sign in to like posts.",true);try{const ref=doc(db,"posts",id,"likes",currentUser.uid),s=await getDoc(ref);if(s.exists())await deleteDoc(ref);else await setDoc(ref,{uid:currentUser.uid,ngwaiName:profileData.ngwaiName,createdAt:serverTimestamp()});refreshPostCounters(id);}catch(error){status("feedStatus","Could not update like: "+friendly(error),true);}};
+window.addComment=async id=>{if(!currentUser)return status("feedStatus","Sign in to comment.",true);const input=$("comment-"+id),text=input.value.trim();if(!text)return;try{await addDoc(collection(db,"posts",id,"comments"),{uid:currentUser.uid,ngwaiName:profileData.ngwaiName,text,createdAt:serverTimestamp()});input.value="";}catch(error){status("feedStatus","Could not comment: "+friendly(error),true);}};
+window.addReply=async(postId,commentId)=>{if(!currentUser)return status("feedStatus","Sign in to reply.",true);const input=$("reply-"+commentId),text=input?.value.trim();if(!text)return;try{await addDoc(collection(db,"posts",postId,"comments",commentId,"replies"),{uid:currentUser.uid,ngwaiName:profileData.ngwaiName,text,createdAt:serverTimestamp()});input.value="";}catch(error){status("feedStatus","Could not reply: "+friendly(error),true);}};
+async function renderCommentsFromSnapshot(id,snap){
+  const target=$("comments-"+id);if(!target)return;if(snap.empty){target.textContent="No comments yet.";return;}
+  const rows=await Promise.all(snap.docs.map(async d=>{
+    const c=d.data(),name=c.ngwaiName||await publicNameFor(c.uid,"NGWAI MEMBER");
+    const replyTarget="replies-"+id+"-"+d.id;
+    return `<div class="comment-row"><p><b>${verifiedName(name)}</b>: ${escapeHtml(c.text||"")}</p><div id="${replyTarget}" class="reply-list"></div><div class="feed-comment-form"><input id="reply-${d.id}" maxlength="1000" placeholder="Reply..."><button onclick="addReply('${id}','${d.id}')">REPLY</button></div></div>`;
+  }));target.innerHTML=rows.join("");
+  snap.docs.forEach(d=>watchReplies(id,d.id));
+}
+function watchReplies(postId,commentId){
+  const key=postId+"_"+commentId;if(replyUnsubs[key])return;
+  replyUnsubs[key]=onSnapshot(query(collection(db,"posts",postId,"comments",commentId,"replies"),orderBy("createdAt","asc")),async snap=>{
+    const target=$("replies-"+postId+"-"+commentId);if(!target)return;
+    const rows=await Promise.all(snap.docs.map(async r=>{const x=r.data(),name=x.ngwaiName||await publicNameFor(x.uid,"NGWAI MEMBER");return `<p class="reply-line">↳ <b>${verifiedName(name)}</b>: ${escapeHtml(x.text||"")}</p>`;}));
+    target.innerHTML=rows.join("");
+  },()=>{const target=$("replies-"+postId+"-"+commentId);if(target)target.textContent="Replies unavailable.";});
+}
+function watchComments(id){
+  if(commentUnsubs[id])return;
+  commentUnsubs[id]=onSnapshot(query(collection(db,"posts",id,"comments"),orderBy("createdAt","asc")),snap=>renderCommentsFromSnapshot(id,snap),()=>{const target=$("comments-"+id);if(target)target.textContent="Comments unavailable.";});
+}
+window.refreshMoments=()=>renderFeed();
+function conversationKey(a,b){return btoa([a,b].sort().join("|")).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/g,"");}
+window.findMember=async()=>{
+  if(!currentUser)return status("memberSearchResult","Sign in to find members.",true);
+  const name=$("memberSearch").value.trim().toUpperCase();if(!/^[A-Z0-9]{6}$/.test(name))return status("memberSearchResult","Enter exactly six letters or numbers.",true);
+  try{const s=await getDocs(query(collection(db,"publicProfiles"),where("ngwaiName","==",name),limit(1)));if(s.empty)return status("memberSearchResult","No member found with that NGWAINAME.",true);const member=s.docs[0].data();if(member.uid===currentUser.uid)return status("memberSearchResult","That is your own NGWAINAME.",true);$("memberSearchResult").innerHTML=`<b>${verifiedName(member.ngwaiName)}</b><br><button class="terminal-button primary" onclick="openConversation('${member.uid}','${member.ngwaiName}')">OPEN PRIVATE CHAT</button>`;}catch(e){status("memberSearchResult","Member search failed: "+friendly(e),true);}
+};
+window.openConversation=async(peerUid,peerName)=>{
+  if(!currentUser)return;const id=conversationKey(currentUser.uid,peerUid);activeConversationId=id;activeConversationPeer={uid:peerUid,ngwaiName:peerName};
+  await setDoc(doc(db,"conversations",id),{members:[currentUser.uid,peerUid].sort(),memberNames:{[currentUser.uid]:profileData.ngwaiName,[peerUid]:peerName},updatedAt:serverTimestamp()},{merge:true});
+  $("chatHeading").innerHTML=`PRIVATE CHANNEL // ${verifiedName(peerName)}`;$("messageText").disabled=false;$("sendMessageBtn").disabled=false;
+  if(messageUnsub)messageUnsub();
+  messageUnsub=onSnapshot(query(collection(db,"conversations",id,"messages"),orderBy("createdAt","asc")),async snap=>{
+    const rows=await Promise.all(snap.docs.map(async d=>{const m=d.data(),name=m.ngwaiName||await publicNameFor(m.uid,"NGWAI MEMBER");return `<div class="terminal-message ${m.uid===currentUser.uid?"mine":""}"><small>${verifiedName(name)} · ${formatDate(m.createdAt)}</small>${escapeHtml(m.text||"")}</div>`;}));
+    $("messageList").innerHTML=snap.empty?'<p class="terminal-muted">No messages yet. Start the conversation.</p>':rows.join("");$("messageList").scrollTop=$("messageList").scrollHeight;
+  },e=>{$("messageList").textContent="Messages unavailable: "+friendly(e);});
+};
+window.sendMessage=async()=>{if(!currentUser||!activeConversationId)return;const input=$("messageText"),text=input.value.trim();if(!text)return;const btn=$("sendMessageBtn");btn.disabled=true;try{await addDoc(collection(db,"conversations",activeConversationId,"messages"),{uid:currentUser.uid,ngwaiName:profileData.ngwaiName,text,createdAt:serverTimestamp()});await updateDoc(doc(db,"conversations",activeConversationId),{lastMessage:text.slice(0,120),lastSender:currentUser.uid,updatedAt:serverTimestamp()});input.value="";}catch(e){status("feedStatus","Message failed: "+friendly(e),true);}finally{btn.disabled=false;}};
+function startInbox(){
+  if(!currentUser||!db)return;if(inboxUnsub)inboxUnsub();
+  const q=query(collection(db,"conversations"),where("members","array-contains",currentUser.uid),orderBy("updatedAt","desc"));
+  inboxUnsub=onSnapshot(q,snap=>{$("conversationList").innerHTML=snap.empty?"No conversations yet.":snap.docs.map(d=>{const c=d.data(),peer=(c.members||[]).find(x=>x!==currentUser.uid),name=c.memberNames?.[peer]||"NGWAI MEMBER";return `<button onclick="openConversation('${peer}','${escapeHtml(name)}')"><b>${verifiedName(name)}</b><br><small>${escapeHtml(c.lastMessage||"Open conversation")}</small></button>`;}).join("");},e=>{$("conversationList").textContent="Inbox unavailable: "+friendly(e);});
+}
+/* Modal helpers and initial render */
+window.openModal=(title,body)=>{$("modalTitle").textContent=title;$("modalBody").innerHTML=body;$("modal").classList.add("show");};
+window.closeModal=()=>{$("modal").classList.remove("show");};
+function openModal(title,body){window.openModal(title,body);}
+renderSellers();renderOrders();populateSettings();
+</script>
+
+<script>
+function acceptAge(){sessionStorage.setItem("ngwaiAgeConfirmed","yes");document.getElementById("ageGate").style.display="none";}
+function denyAge(){document.getElementById("ageCard").innerHTML="<h1>Access unavailable</h1><p>NGWAI is intended for visitors aged 18 and above.</p><button onclick=\"window.location.href='about:blank'\">EXIT</button>";}
+if(sessionStorage.getItem("ngwaiAgeConfirmed")==="yes")document.getElementById("ageGate").style.display="none";
+function toggleMenu(force){
+  const drawer=document.getElementById("sideDrawer"),shade=document.getElementById("drawerShade"),button=document.getElementById("menuToggle");
+  const open=typeof force==="boolean"?force:!drawer.classList.contains("open");
+  drawer.classList.toggle("open",open);shade.classList.toggle("open",open);drawer.setAttribute("aria-hidden",String(!open));button.setAttribute("aria-expanded",String(open));
+}
+function showTab(id){
+  if(id==="feed")document.body.classList.add("moments-mode");else document.body.classList.remove("moments-mode");
+  document.querySelectorAll(".section").forEach(s=>s.classList.toggle("active",s.id===id));
+  document.querySelectorAll("#drawerNav button").forEach(b=>b.classList.toggle("active",b.dataset.tab===id));
+  toggleMenu(false);
+  if(id==="orders")renderOrders();
+  if(id==="feed"){document.getElementById("floatingPlus").classList.toggle("hide",!window.currentUser);if(window.refreshMoments)window.refreshMoments();}
+  else document.getElementById("floatingPlus").classList.add("hide");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+window.showTab=showTab;window.toggleMenu=toggleMenu;
+</script>
+</body>
+</html>
